@@ -1,0 +1,123 @@
+package runJrun;
+
+import java.util.Random;
+
+public class Carrera {
+	private String nombre;
+	private float longitud;
+	private int numCompetidores;
+	private Coche vCoches[];
+	private Coche vOrdenLlegada[];
+	private int numTurno;
+
+	public Carrera(String nombre, float longitud, int numCompetidores) {
+		super();
+		this.nombre = nombre;
+		this.longitud = longitud;
+		this.numCompetidores = numCompetidores;
+		this.vCoches = new Coche[numCompetidores];
+		this.vOrdenLlegada = new Coche[numCompetidores];
+		this.numTurno=0;
+	}
+
+	public void agregarCoche(Coche coche) {
+		
+		for (int i = 0; i < vCoches.length; i++) {
+			if (vCoches[i] == null) {
+				vCoches[i] = coche;
+				vCoches[i].setDorsal(String.valueOf(i+1));
+				break;
+			} else {
+				if (i==vCoches.length-1)
+					System.out.println("La carrera está completa. " + coche.getPiloto() + " no podrá competir.");
+			}
+		}
+	}
+
+	public void turnoCarrera() {
+		Random r = new Random();
+		
+		numTurno++;
+		
+		for (int i=0; i<vCoches.length; i++) {
+			if (!vCoches[i].isTerminado()) {
+				
+				if (!vCoches[i].isJugador()) {
+					if (vCoches[i].isEnMarcha()) {
+						if (vCoches[i].getVelocidad()<=150) {
+							vCoches[i].acelerar();
+						} else {
+							if (r.nextInt()%2==0) {
+								vCoches[i].acelerar();
+							} else {
+								vCoches[i].frenar();
+							}
+						}
+					} else {
+						if (vOrdenLlegada[0]==null)
+						vCoches[i].arrancar();
+					}
+				}
+			}
+			if (vCoches[i].getKms()>=longitud) {
+				vCoches[i].setTerminado(true);
+				vCoches[i].setMarcha(false);
+				for (int j=0; j<vOrdenLlegada.length; j++) {
+					if (vOrdenLlegada[j]==null) {
+						vOrdenLlegada[j]=vCoches[i];
+						break;
+					} else {
+						if (vOrdenLlegada[j].equals(vCoches[i]))
+							break;
+					}
+				}
+			}
+		}
+	}
+	
+	public boolean isTerminada() {
+		for (Coche coche : vCoches) {
+			if (coche.isEnMarcha()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public float getLongitud() {
+		return longitud;
+	}
+
+	public int getNumCompetidores() {
+		return numCompetidores;
+	}
+
+	private void reordenarLlegada() {
+		Coche vAux[] = vCoches;
+		
+	}
+	
+	public void imprimirOrdenLlegada() {
+		for (Coche coche : vOrdenLlegada) {
+			if (coche!=null)
+				System.out.println(coche);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		for (Coche coche : vCoches) {
+			System.out.println(coche);
+		}
+		return "Carrera [nombre=" + nombre + ", longitud=" + longitud + ", numCompetidores=" + numCompetidores + "]";
+	}
+
+}
