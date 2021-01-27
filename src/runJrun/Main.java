@@ -12,13 +12,13 @@ public class Main {
 		Coche c2 = new Coche();
 		Coche c3 = new Coche();
 		Coche c4 = new Coche();
-		Coche c5 = new Coche();
-		Coche c6 = new Coche();
-		Coche c7 = new Coche();
-		Coche c8 = new Coche();
+//		Coche c5 = new Coche();
+//		Coche c6 = new Coche();
+//		Coche c7 = new Coche();
+//		Coche c8 = new Coche();
 		Coche jugador = new Coche("Tomás Generelo", "", true);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 5f, 5);
+		Carrera carrera = new Carrera("I Gran Premio de Java", 0.0001f, 5);
 		
 		carrera.agregarCoche(c1);
 		carrera.agregarCoche(c2);
@@ -50,7 +50,6 @@ public class Main {
 					break;
 				}
 			}
-			
 			
 			carrera.turnoCarrera();
 			carrera.toString();
