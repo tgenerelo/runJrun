@@ -11,7 +11,6 @@ public class Carrera {
 	private int numTurno;
 
 	public Carrera(String nombre, float longitud, int numCompetidores) {
-		super();
 		this.nombre = nombre;
 		this.longitud = longitud;
 		this.numCompetidores = numCompetidores;
@@ -19,6 +18,14 @@ public class Carrera {
 		this.vOrdenLlegada = new Coche[numCompetidores];
 		this.numTurno = 0;
 	}
+
+//	public void posicionCoches() {
+//		for (int i=0; i<vCoches.length; i++) {
+//			for (int j=1; j<vCoches.length; j++) {
+//				if ()
+//			}
+//		}
+//	}
 
 	public void agregarCoche(Coche coche) {
 
@@ -41,7 +48,6 @@ public class Carrera {
 
 		for (int i = 0; i < vCoches.length; i++) {
 			if (!vCoches[i].isTerminado()) {
-
 				if (!vCoches[i].isJugador()) {
 					if (vCoches[i].isEnMarcha()) {
 						if (vCoches[i].getVelocidad() <= 150) {
@@ -78,10 +84,11 @@ public class Carrera {
 
 	public boolean isTerminada() {
 		for (Coche coche : vCoches) {
-			if (coche.isEnMarcha()) {
+			if (vOrdenLlegada[0] == null || coche.isEnMarcha()) {
 				return false;
 			}
 		}
+		reordenarLlegada();
 		return true;
 	}
 
@@ -108,11 +115,16 @@ public class Carrera {
 
 	public void imprimirOrdenLlegada() {
 
-		reordenarLlegada();
-
 		for (Coche coche : vOrdenLlegada) {
 			if (coche != null)
 				System.out.println(coche);
+		}
+	}
+	
+	public void imprimirClasificacion () {
+		for (Coche coche : vOrdenLlegada) {
+			if (coche!=null)
+				System.out.println(coche.getPosicion() + "º | " + coche.getPiloto() + "   | Dorsal: " + coche.getDorsal());
 		}
 	}
 
@@ -130,6 +142,10 @@ public class Carrera {
 
 	public int getNumCompetidores() {
 		return numCompetidores;
+	}
+
+	public Coche[] getvOrdenLlegada() {
+		return vOrdenLlegada;
 	}
 
 	@Override

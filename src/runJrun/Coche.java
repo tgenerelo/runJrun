@@ -13,12 +13,13 @@ public class Coche {
 	private boolean terminado;
 	private boolean jugador;
 
-	final int POTENCIA = 50;
+	private final int POTENCIA = 50;
 	final int SEGUNDOSTURNO = 10;
 
 	public Coche() {
 		this.piloto = generarNombre();
-		this.dorsal = generarDorsal();
+//		this.dorsal = generarDorsal();
+		this.dorsal = "";
 		this.velocidad = 0;
 		this.posicion=0;
 		this.kms = 0;
@@ -28,10 +29,10 @@ public class Coche {
 		this.jugador = false;
 	}
 
-	public Coche(String piloto, String dorsal, boolean jugador) {
+	public Coche(String piloto, boolean jugador) {
 		super();
 		this.piloto = piloto;
-		this.dorsal = dorsal;
+		this.dorsal = "";
 		this.velocidad = 0;
 		this.posicion=0;
 		this.kms = 0;
@@ -68,11 +69,11 @@ public class Coche {
 		return vNombres[r.nextInt(vNombres.length)] + " " + vApellidos[r.nextInt(vApellidos.length)];
 	}
 
-	private String generarDorsal() {
-		Random r = new Random();
-
-		return String.valueOf(r.nextInt(100));
-	}
+//	private String generarDorsal() {
+//		Random r = new Random();
+//
+//		return String.valueOf(r.nextInt(100));
+//	}
 
 	public void arrancar() {
 		enMarcha = true;
@@ -85,7 +86,7 @@ public class Coche {
 		if (!accidentado && isEnMarcha()) {
 			velocidad += r.nextInt(POTENCIA);
 			if (velocidad > 200) {
-				kms += (((velocidad / 3.6f) * SEGUNDOSTURNO / 1000) / 3); // ((Conversión a m/s) * segundos que dura cada turno /
+				kms += (((velocidad / 3.6f) * SEGUNDOSTURNO / 1000) / 5); // ((Conversión a m/s) * segundos que dura cada turno /
 																// conversión a km)
 				accidente();
 			} else {
@@ -104,6 +105,8 @@ public class Coche {
 		if (velocidad < 0) {
 			velocidad = 0;
 		}
+		
+		kms += ((velocidad / 3.6f) * 10 / 1000);
 	}
 
 	public void accidente() {
