@@ -6,6 +6,7 @@ public class Coche {
 	private String piloto;
 	private String dorsal;
 	private int velocidad;
+	private int posicion;
 	private float kms;
 	private boolean enMarcha;
 	private boolean accidentado;
@@ -19,6 +20,7 @@ public class Coche {
 		this.piloto = generarNombre();
 		this.dorsal = generarDorsal();
 		this.velocidad = 0;
+		this.posicion=0;
 		this.kms = 0;
 		this.enMarcha = false;
 		this.accidentado = false;
@@ -31,6 +33,7 @@ public class Coche {
 		this.piloto = piloto;
 		this.dorsal = dorsal;
 		this.velocidad = 0;
+		this.posicion=0;
 		this.kms = 0;
 		this.enMarcha = false;
 		this.accidentado = false;
@@ -187,6 +190,14 @@ public class Coche {
 		return velocidad;
 	}
 
+	public int getPosicion() {
+		return posicion;
+	}
+
+	public void setPosicion(int posicion) {
+		this.posicion = posicion;
+	}
+
 	public boolean isJugador() {
 		return jugador;
 	}
@@ -198,7 +209,7 @@ public class Coche {
 	@Override
 	public String toString() {
 		return "Coche " + dorsal + ": " + piloto + " | " + velocidad + " km/h | " + String.format("%.3f", kms)
-				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado :" + terminado;
+				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado :" + terminado + " | " + posicion;
 	}
 
 }

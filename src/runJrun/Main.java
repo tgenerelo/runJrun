@@ -12,15 +12,21 @@ public class Main {
 		Coche c2 = new Coche();
 		Coche c3 = new Coche();
 		Coche c4 = new Coche();
+		Coche c5 = new Coche();
+		Coche c6 = new Coche();
+		Coche c7 = new Coche();
+		Coche c8 = new Coche();
 		Coche jugador = new Coche("Tomás Generelo", "", true);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 6.5f, 5);
+		Carrera carrera = new Carrera("I Gran Premio de Java", 5f, 5);
 		
 		carrera.agregarCoche(c1);
 		carrera.agregarCoche(c2);
 		carrera.agregarCoche(c3);
 		carrera.agregarCoche(c4);
 		carrera.agregarCoche(jugador);
+		
+		System.out.println();
 		
 		carrera.toString();
 		
@@ -51,7 +57,7 @@ public class Main {
 			System.out.println();
 			
 		} while (carrera.isTerminada()==false);
-		
+		System.out.println("ORDEN DE LLEGADA:");
 		carrera.imprimirOrdenLlegada();
 
 		leer.close();

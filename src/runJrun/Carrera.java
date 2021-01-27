@@ -1,5 +1,6 @@
 package runJrun;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Carrera {
@@ -58,20 +59,22 @@ public class Carrera {
 						vCoches[i].arrancar();
 					}
 				}
-			}
-			if (vCoches[i].getKms()>=longitud) {
-				vCoches[i].setTerminado(true);
-				vCoches[i].setMarcha(false);
-				for (int j=0; j<vOrdenLlegada.length; j++) {
-					if (vOrdenLlegada[j]==null) {
-						vOrdenLlegada[j]=vCoches[i];
-						break;
-					} else {
-						if (vOrdenLlegada[j].equals(vCoches[i]))
+				if (vCoches[i].getKms()>=longitud) {
+					vCoches[i].setTerminado(true);
+					vCoches[i].setMarcha(false);
+					vCoches[i].setPosicion(numTurno);
+					for (int j=0; j<vOrdenLlegada.length; j++) {
+						if (vOrdenLlegada[j]==null) {
+							vOrdenLlegada[j]=vCoches[i];
 							break;
+						} else {
+							if (vOrdenLlegada[j].equals(vCoches[i]))
+								break;
+						}
 					}
 				}
 			}
+			
 		}
 	}
 	
@@ -101,11 +104,28 @@ public class Carrera {
 	}
 
 	private void reordenarLlegada() {
-		Coche vAux[] = vCoches;
+		Coche cocheAux = null;
+		
+		for (int m=0; m<vOrdenLlegada.length; m++) {
+			for (int i=1; i<vOrdenLlegada.length; i++) {
+				if (vOrdenLlegada[i].getPosicion()==vOrdenLlegada[i-1].getPosicion()) {
+					if (vOrdenLlegada[i].getKms()>vOrdenLlegada[i-1].getKms()) {
+						cocheAux=vOrdenLlegada[i];
+						vOrdenLlegada[i] = vOrdenLlegada[i-1];
+						vOrdenLlegada[i-1] = cocheAux;
+					}
+				}
+			}
+		}
+		
+		
 		
 	}
 	
 	public void imprimirOrdenLlegada() {
+		
+		reordenarLlegada();
+		
 		for (Coche coche : vOrdenLlegada) {
 			if (coche!=null)
 				System.out.println(coche);
@@ -115,7 +135,8 @@ public class Carrera {
 	@Override
 	public String toString() {
 		for (Coche coche : vCoches) {
-			System.out.println(coche);
+			if (coche!=null)
+				System.out.println(coche);
 		}
 		return "Carrera [nombre=" + nombre + ", longitud=" + longitud + ", numCompetidores=" + numCompetidores + "]";
 	}
