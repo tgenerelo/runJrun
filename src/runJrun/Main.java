@@ -14,30 +14,34 @@ public class Main {
 		Coche c2 = new Coche();
 		Coche c3 = new Coche();
 		Coche c4 = new Coche();
-//		Coche c5 = new Coche();
-//		Coche c6 = new Coche();
-//		Coche c7 = new Coche();
+		Coche c5 = new Coche();
+		Coche c6 = new Coche();
+		Coche c7 = new Coche();
 //		Coche c8 = new Coche();
-		Coche jugador = new Coche("Tomás Generelo", true);
+		Coche jugador = new Coche("Paula Béjar", true);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 2f, 5);
+		Carrera carrera = new Carrera("I Gran Premio de Java", 7f, 8);
 		
 		carrera.agregarCoche(c1);
 		carrera.agregarCoche(c2);
 		carrera.agregarCoche(c3);
 		carrera.agregarCoche(c4);
 		carrera.agregarCoche(jugador);	
+		carrera.agregarCoche(c5);	
+		carrera.agregarCoche(c6);	
+		carrera.agregarCoche(c7);	
+
 		
 		do {
 			if (jugador.isEnMarcha() || carrera.getvOrdenLlegada()[0]==null) {
 
 				do {
-					carrera.toString();
+					carrera.pintarGraficos();
 					jugador.estadoCoche();
 					if (jugador.isEnMarcha()) {
-						System.out.print(" 2-Acelerar  |  3-Frenar  |  > ");
+						System.out.print("                                  [ 2-Acelerar  |  3-Frenar ]  > ");
 					} else {
-						System.out.print(" 1-Arrancar  |  > ");
+						System.out.print("                                        [ 1-Arrancar ]  > ");
 					}
 					do {
 						try {
@@ -86,7 +90,7 @@ public class Main {
 			carrera.turnoCarrera();
 			
 		} while (carrera.isTerminada()==false);
-		System.out.println("CLASIFICACIÓN:");
+
 		carrera.imprimirClasificacion();
 
 		leer.close();

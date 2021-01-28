@@ -7,14 +7,16 @@ public class Coche {
 	private String dorsal;
 	private int velocidad;
 	private int posicion;
+	private int posicionFinal;
 	private float kms;
+	private float tiempo;
 	private boolean enMarcha;
 	private boolean accidentado;
 	private boolean terminado;
 	private boolean jugador;
 
 	private final int POTENCIA = 50;
-	final int SEGUNDOSTURNO = 10;
+	private final int SEGUNDOSTURNO = 10;
 
 	public Coche() {
 		this.piloto = generarNombre();
@@ -22,7 +24,9 @@ public class Coche {
 		this.dorsal = "";
 		this.velocidad = 0;
 		this.posicion=0;
+		this.posicionFinal=0;
 		this.kms = 0;
+		this.tiempo=0;
 		this.enMarcha = false;
 		this.accidentado = false;
 		this.terminado = false;
@@ -35,7 +39,9 @@ public class Coche {
 		this.dorsal = "";
 		this.velocidad = 0;
 		this.posicion=0;
+		this.posicionFinal=0;
 		this.kms = 0;
+		this.tiempo=0;
 		this.enMarcha = false;
 		this.accidentado = false;
 		this.terminado = false;
@@ -94,7 +100,6 @@ public class Coche {
 															// km)
 			}
 		}
-
 	}
 
 	public void frenar() {
@@ -114,35 +119,50 @@ public class Coche {
 		velocidad = 0;
 		accidentado = true;
 	}
-
+	
 	public void estadoCoche() {
 		String estado = "";
 
 		if (accidentado) {
 			estado = "  ACCIDENTADO   ";
+			posicion=0;
 		} else {
 			if (!isEnMarcha()) {
 				estado = "  NO ARRANCADO  ";
+				posicion=0;
 			} else {
 				estado = "   EN CARRERA   ";
 			}
 		}
 
-		System.out.println("╔═══════════╦══════════╦══════════╦════════════════╗");
+		System.out.println("                        ╔═══════════╦══════════╦══════════╦════════════════╗");
 		if (velocidad < 10) {
-			System.out.println("║   " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
+			System.out.println("                        ║   " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
 					+ estado + "║");
 		} else {
 			if (velocidad > 99) {
-				System.out.println("║ " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
+				System.out.println("                        ║ " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
 						+ estado + "║");
 			} else {
-				System.out.println("║  " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
+				System.out.println("                        ║  " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
 						+ estado + "║");
 			}
 		}
-		System.out.println("╚═══════════╩══════════╩══════════╩════════════════╝");
+		System.out.println("                        ╚═══════════╩══════════╩══════════╩════════════════╝");
 
+	}
+	
+	private String verPosicion() {
+		
+		if (posicion==0) {
+			return "    --    ";
+		}
+		
+		if (String.valueOf(posicion).length()<2) {
+			return "    " + posicion + "º    ";
+		} else {
+			return "    " + posicion + "º   ";
+		}
 	}
 
 	public float getKms() {
@@ -196,7 +216,15 @@ public class Coche {
 	public int getPosicion() {
 		return posicion;
 	}
+	
+	public int getPosicionFinal() {
+		return posicionFinal;
+	}
 
+	public void setPosicionFinal(int posicion) {
+		this.posicionFinal = posicion;
+	}
+	
 	public void setPosicion(int posicion) {
 		this.posicion = posicion;
 	}
@@ -209,10 +237,18 @@ public class Coche {
 		this.jugador = jugador;
 	}
 
+	public float getTiempo() {
+		return tiempo;
+	}
+
+	public void setTiempo(float tiempo) {
+		this.tiempo = tiempo;
+	}
+
 	@Override
 	public String toString() {
 		return "Coche " + dorsal + ": " + piloto + " | " + velocidad + " km/h | " + String.format("%.3f", kms)
-				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado :" + terminado + " | " + posicion;
+				+ " km | En Marcha: " +  enMarcha + " | Accidentado: " + accidentado + " | Terminado: " + terminado + " | " + posicionFinal + " | " + posicion + " | " + tiempo + " segundos";
 	}
 
 }
