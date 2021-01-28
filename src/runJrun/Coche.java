@@ -34,7 +34,6 @@ public class Coche {
 	}
 
 	public Coche(String piloto, boolean jugador) {
-		super();
 		this.piloto = piloto;
 		this.dorsal = "";
 		this.velocidad = 0;

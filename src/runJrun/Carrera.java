@@ -14,7 +14,7 @@ public class Carrera {
 	private Coche vPosiciones[];
 	private int numTurno;
 
-	private final int ANCHOTOTAL = 160;
+	private final int ANCHOTOTAL = 100;
 	private final int ANCHOPISTA = ANCHOTOTAL - 40;
 
 	public Carrera(String nombre, float longitud, int numCompetidores) {
@@ -210,11 +210,11 @@ public class Carrera {
 		System.out.println("┐");
 		
 //		CABECERA (TÍTULO)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
-			System.out.print(" ");
-		}
-		System.out.print("┌");
-		
+//		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
+//			System.out.print(" ");
+//		}
+//		System.out.print("┌");
+//		
 
 //		 PRIMERA LÍNEA (borde)
 		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {

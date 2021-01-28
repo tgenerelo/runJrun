@@ -18,7 +18,7 @@ public class Main {
 		Coche c6 = new Coche();
 		Coche c7 = new Coche();
 //		Coche c8 = new Coche();
-		Coche jugador = new Coche("Paula Béjar", true);
+		Coche jugador = new Coche("Tomás Generelo", true);
 		
 		Carrera carrera = new Carrera("I Gran Premio de Java", 7f, 8);
 		
@@ -30,8 +30,7 @@ public class Main {
 		carrera.agregarCoche(c5);	
 		carrera.agregarCoche(c6);	
 		carrera.agregarCoche(c7);	
-
-		
+				
 		do {
 			if (jugador.isEnMarcha() || carrera.getvOrdenLlegada()[0]==null) {
 
