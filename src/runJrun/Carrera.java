@@ -191,53 +191,54 @@ public class Carrera {
 			System.out.print(" ");
 		}
 		System.out.print("┌");
-		for (int i = 0; i < 4; i++) {
-			System.out.print("─");
-		}
-
-		System.out.print("┬");
-
-		for (int i = 0; i < (anchoNombres+2); i++) {
-			System.out.print("─");
-		}
-		
-		System.out.print("┬");
-
-		for (int i = 0; i < (anchoTiempo+2); i++) {
+		for (int i = 0; i < (anchoNombres + anchoTiempo + 10); i++) {
 			System.out.print("─");
 		}
 
 		System.out.println("┐");
 		
 //		CABECERA (TÍTULO)
+		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
+			System.out.print(" ");
+		}
+		System.out.print("│");
+		System.out.print(titulo);
+		System.out.print("│");
+		System.out.println();
+		
+//		CABECERA (borde inferior)
+		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
+			System.out.print(" ");
+		}
+		System.out.print("├");
+		for (int i = 0; i < (anchoNombres + anchoTiempo + 10); i++) {
+			System.out.print("─");
+		}
+		
+		System.out.println("┤");
+
+//		 PRIMERA LÍNEA (borde)
 //		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
 //			System.out.print(" ");
 //		}
 //		System.out.print("┌");
+//		for (int i = 0; i < 4; i++) {
+//			System.out.print("─");
+//		}
+//
+//		System.out.print("┬");
+//
+//		for (int i = 0; i < (anchoNombres+2); i++) {
+//			System.out.print("─");
+//		}
 //		
-
-//		 PRIMERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoNombres + anchoTiempo + 12)) / 2); i++) {
-			System.out.print(" ");
-		}
-		System.out.print("┌");
-		for (int i = 0; i < 4; i++) {
-			System.out.print("─");
-		}
-
-		System.out.print("┬");
-
-		for (int i = 0; i < (anchoNombres+2); i++) {
-			System.out.print("─");
-		}
-		
-		System.out.print("┬");
-
-		for (int i = 0; i < (anchoTiempo+2); i++) {
-			System.out.print("─");
-		}
-
-		System.out.println("┐");
+//		System.out.print("┬");
+//
+//		for (int i = 0; i < (anchoTiempo+2); i++) {
+//			System.out.print("─");
+//		}
+//
+//		System.out.println("┐");
 
 		// SEGUNDA LÍNEA (contenido)
 		for (Coche coche : vOrdenLlegada) {
