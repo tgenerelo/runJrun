@@ -9,27 +9,20 @@ public class Main {
 		Scanner leer = new Scanner(System.in);
 		int userInput=0;
 		boolean accionValida=true;
-		
-		Coche c1 = new Coche();
-		Coche c2 = new Coche();
-		Coche c3 = new Coche();
-		Coche c4 = new Coche();
-		Coche c5 = new Coche();
-		Coche c6 = new Coche();
-		Coche c7 = new Coche();
-//		Coche c8 = new Coche();
+
 		Coche jugador = new Coche("Tomás Generelo", true);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 7f, 8);
+		Carrera carrera = new Carrera("I Gran Premio de Java", 0.2f, 8);
 		
-		carrera.agregarCoche(c1);
-		carrera.agregarCoche(c2);
-		carrera.agregarCoche(c3);
-		carrera.agregarCoche(c4);
+		carrera.agregarCoche(new Coche());
+		carrera.agregarCoche(new Coche());
+		carrera.agregarCoche(new Coche());
+		carrera.agregarCoche(new Coche());
 		carrera.agregarCoche(jugador);	
-		carrera.agregarCoche(c5);	
-		carrera.agregarCoche(c6);	
-		carrera.agregarCoche(c7);	
+		carrera.agregarCoche(new Coche());	
+		carrera.agregarCoche(new Coche());	
+		carrera.agregarCoche(new Coche());
+
 				
 		do {
 			if (jugador.isEnMarcha() || carrera.getvOrdenLlegada()[0]==null) {
