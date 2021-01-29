@@ -10,9 +10,9 @@ public class Main {
 		int userInput=0;
 		boolean accionValida=true;
 
-		Coche jugador = new Coche("Tomás Generelo", true);
+		Coche jugador = new Coche("Juanfran", true);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 0.2f, 8);
+		Carrera carrera = new Carrera("I Gran Premio de Java", 6f, 8);
 		
 		carrera.agregarCoche(new Coche());
 		carrera.agregarCoche(new Coche());

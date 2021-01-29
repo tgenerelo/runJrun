@@ -396,43 +396,43 @@ public class Carrera {
 		System.out.println();
 	}
 
-	public void pintarSalpicadero(Coche coche) {
-		String velocidadString = String.valueOf(coche.getVelocidad()) + " km/h";
-		String kmsString = String.format("%.1f", coche.getKms()) + " km";
-		String posicionString = String.valueOf(coche.getPosicion()) + "º";
-		String estado = "";
-		
-		if (coche.isAccidentado()) {
-			estado = "  ACCIDENTADO   ";
-			coche.setPosicion(0);
-		} else {
-			if (!coche.isEnMarcha()) {
-				estado = "  NO ARRANCADO  ";
-				coche.setPosicion(0);
-			} else {
-				estado = "   EN CARRERA   ";
-			}
-		}
-
-		int anchoSalpicadero=velocidadString.length() + kmsString.length() + posicionString.length() + estado.length() + 13;
-		
-		System.out.println("                        ╔═══════════╦══════════╦══════════╦════════════════╗");
-		if (velocidad < 10) {
-			System.out.println("                        ║   " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
-					+ estado + "║");
-		} else {
-			if (velocidad > 99) {
-				System.out.println("                        ║ " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
-						+ estado + "║");
-			} else {
-				System.out.println("                        ║  " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
-						+ estado + "║");
-			}
-		}
-		System.out.println("                        ╚═══════════╩══════════╩══════════╩════════════════╝");
-
-		
-	}
+//	public void pintarSalpicadero(Coche coche) {
+//		String velocidadString = String.valueOf(coche.getVelocidad()) + " km/h";
+//		String kmsString = String.format("%.1f", coche.getKms()) + " km";
+//		String posicionString = String.valueOf(coche.getPosicion()) + "º";
+//		String estado = "";
+//		
+//		if (coche.isAccidentado()) {
+//			estado = "  ACCIDENTADO   ";
+//			coche.setPosicion(0);
+//		} else {
+//			if (!coche.isEnMarcha()) {
+//				estado = "  NO ARRANCADO  ";
+//				coche.setPosicion(0);
+//			} else {
+//				estado = "   EN CARRERA   ";
+//			}
+//		}
+//
+//		int anchoSalpicadero=velocidadString.length() + kmsString.length() + posicionString.length() + estado.length() + 13;
+//		
+//		System.out.println("                        ╔═══════════╦══════════╦══════════╦════════════════╗");
+//		if (velocidad < 10) {
+//			System.out.println("                        ║   " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
+//					+ estado + "║");
+//		} else {
+//			if (velocidad > 99) {
+//				System.out.println("                        ║ " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
+//						+ estado + "║");
+//			} else {
+//				System.out.println("                        ║  " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║" + verPosicion() + "║"
+//						+ estado + "║");
+//			}
+//		}
+//		System.out.println("                        ╚═══════════╩══════════╩══════════╩════════════════╝");
+//
+//		
+//	}
 	
 	private void pintarLateralPista() {
 		for (int i = 0; i < ANCHOTOTAL; i++) {
