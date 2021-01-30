@@ -12,7 +12,6 @@ public class Carrera {
 	private float longitud;
 	private int numCompetidores;
 	private Coche vCoches[];
-	private Coche vCochesCopia[];
 	private Coche vOrdenLlegada[];
 	private Coche vPosiciones[];
 	private int numTurno;
@@ -34,55 +33,41 @@ public class Carrera {
 	}
 
 	public void posicionCoches() {
-		Coche aux = null;
 
-		vPosiciones = vCoches.clone();
+		Coche vAux[] = new Coche[vCoches.length];
+		float exch = 0f;
+		vAux = vCoches.clone();
 
-		for (int i = 0; i < (vPosiciones.length - 1); i++) {
-			int j;
-			if (vPosiciones[i] == null) {
-				for (j = i + 1; j < vPosiciones.length - 1; j++) {
-					if (vPosiciones[j] != null)
-						break;
+		for (int m = 0; m < vAux.length; m++) {
+			exch = 0;
+			for (int i = 0; i < vAux.length; i++) {
+				if (vAux[i] != null && (vAux[i].getKms() > exch)) {
+					exch = vAux[i].getKms();
 				}
-				vPosiciones[i] = vPosiciones[j];
-				vPosiciones[j] = null;
+			}
+			for (int j = 0; j < vAux.length; j++) {
+				if (vAux[j] != null && vAux[j].getKms() == exch) {
+					vPosiciones[m] = vAux[j];
+					vAux[j] = null;
+					break;
 
+				}
 			}
 		}
-
-		for (Coche coche : vPosiciones) {
-
-			for (int i = 1; i < vPosiciones.length; i++) {
-				if (vPosiciones[i] != null) {
-					if (!vPosiciones[i].isTerminado() && !vPosiciones[i].isAccidentado()
-							&& !vPosiciones[i - 1].isTerminado()
-							&& (vPosiciones[i].getKms() > vPosiciones[i - 1].getKms())) {
-						aux = vPosiciones[i - 1];
-						vPosiciones[i - 1] = vPosiciones[i];
-						vPosiciones[i] = aux;
-					}
-				}
-
-			}
-		}
-
-		asignarPosicionesCoches();
 	}
 
 	private void comprobarDorsal(Coche coche) {
 
 		for (int j = 0; j < vCoches.length; j++) {
 			if (vCoches[j] != null && coche.getDorsal().equalsIgnoreCase(vCoches[j].getDorsal())) {
-				coche.generarDorsal();
+				coche.setDorsal(coche.generarDorsal());
 				j = 0;
 			}
 		}
-
 	}
-	
+
 	public void prepararCarrera() {
-		for (int i=0; i<vCoches.length; i++) {
+		for (int i = 0; i < vCoches.length; i++) {
 			if (vCoches[i] == null) {
 				agregarCoche(new Coche());
 				i--;
@@ -94,7 +79,7 @@ public class Carrera {
 		Random r = new Random();
 		int random = 0;
 		boolean asignado = false;
-		
+
 		if (coche.isJugador()) {
 			numJugadores++;
 			coche.setNumJugador(numJugadores);
@@ -113,24 +98,21 @@ public class Carrera {
 			}
 
 		} while (asignado == false);
-
 	}
 
-	private void asignarPosicionesCoches() {
-
-		for (Coche coche : vCoches) {
-			if (coche != null) {
-				for (int j = 0; j < vPosiciones.length; j++) {
-					if (coche.getDorsal().equals(vPosiciones[j].getDorsal())) {
-						coche.setPosicion(j + 1);
-						break;
-					}
-				}
-			}
-
-		}
-
-	}
+//	private void asignarDorsalesCoches() {
+//
+//		for (Coche coche : vCoches) {
+//			if (coche != null) {
+//				for (int j = 0; j < vPosiciones.length; j++) {
+//					if (coche.getDorsal().equals(vPosiciones[j].getDorsal())) {
+//						coche.setPosicion(j + 1);
+//						break;
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	private void turnoJugador(Coche jugador) {
 		Scanner leer = new Scanner(System.in);
@@ -205,7 +187,7 @@ public class Carrera {
 						coche.frenar();
 					}
 				}
-				coche.setVelocidadMedia((coche.getVelocidadMedia()+coche.getVelocidad())/numTurno);
+
 			} else {
 				if (vOrdenLlegada[0] == null)
 					coche.arrancar();
@@ -214,38 +196,33 @@ public class Carrera {
 	}
 
 	public void turnoCarrera() {
-//		Coche vAux[] = vCoches.clone();
 
 		numTurno++;
 
-		for (int i=1; i<=numJugadores; i++) {
-			for (int j=0; j<vCoches.length; j++) {
+		for (int i = 1; i <= numJugadores; i++) {
+			for (int j = 0; j < vCoches.length; j++) {
 				if (vCoches[j].getNumJugador() == i) {
 					turnoJugador(vCoches[j]);
+					vCoches[j]
+							.setVelocidadMedia((vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
 				}
 			}
-		}
 
-//		for (Coche coche : vCoches) {
-//			if (coche != null) {
-//				if (coche.isJugador()) {
-//					turnoJugador(coche);
-//				}
-//			}
-//		}
-		
-//		vCoches=vAux.clone();
+			posicionCoches();
+		}
 
 		for (Coche coche : vCoches) {
 			if (coche != null) {
 				if (!coche.isJugador()) {
 					turnoNpcs(coche);
+					coche.setVelocidadMedia((coche.getVelocidadMedia() + coche.getVelocidad()) / numTurno);
 				}
 			}
 		}
+		posicionCoches();
 
 		for (Coche coche : vCoches) {
-			if (coche.getKms() >= longitud) {
+			if (coche.isEnMarcha() && coche.getKms() >= longitud) {
 				coche.setTerminado(true);
 				coche.setMarcha(false);
 				calcularTiempo(coche);
@@ -266,12 +243,9 @@ public class Carrera {
 	}
 
 	private void calcularTiempo(Coche coche) {
-		if (coche.isTerminado()) {
-			coche.setTiempo((numTurno * 10) - (coche.getKms() - longitud / 5)); // El tiempo que ha logrado el coche en
+
+		coche.setTiempo((numTurno * 10) - (coche.getKms() - longitud) * 10); // El tiempo que ha logrado el coche en
 																				// segundos.
-		} else {
-//			coche.setTiempo((numTurno * 10) - (longitud - coche.getKms() / -5));
-		}
 
 	}
 
