@@ -36,21 +36,39 @@ public class Carrera {
 
 		Coche vAux[] = new Coche[vCoches.length];
 		float exch = 0f;
+		int posicion=1;
 		vAux = vCoches.clone();
+		
 
-		for (int m = 0; m < vAux.length; m++) {
+		for (int m = 0; m < vAux.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
 			exch = 0;
-			for (int i = 0; i < vAux.length; i++) {
+			for (int i = 0; i < vAux.length; i++) { // BUSCA LA MAYOR DISTANCIA RECORRIDA
 				if (vAux[i] != null && (vAux[i].getKms() > exch)) {
-					exch = vAux[i].getKms();
+					exch = vAux[i].getKms(); // ALMACENA LA MAYOR DISTANCIA RECORRIDA
 				}
 			}
-			for (int j = 0; j < vAux.length; j++) {
+			for (int j = 0; j < vAux.length; j++) { // ENCUENTRA EL COCHE CON LA MAYOR DISTANCIA RECORRIDA QUE NO ESTÉ ACCIDENTADO
 				if (vAux[j] != null && vAux[j].getKms() == exch) {
-					vPosiciones[m] = vAux[j];
-					vAux[j] = null;
+					vPosiciones[m] = vAux[j]; // ASIGNA EL COCHE EN EL PRIMER HUECO LIBRE DE vPosiciones
+					vAux[j] = null; // ELIMINA EL COCHE DE vAux PARA QUE NO LO VUELVA A ENCONTRAR
+					if (!vPosiciones[m].isTerminado() && !vPosiciones[m].isAccidentado()) {
+						vPosiciones[m].setPosicion(posicion);
+						posicion++;
+					} else {
+						vPosiciones[m].setPosicion(0);
+					}
+					
 					break;
-
+				}
+			}
+			
+			for (int i=0; i<vPosiciones.length; i++) {
+				for (int j=0; j<vCoches.length; j++) {
+					if ((vPosiciones[i] != null && vCoches[j] != null) && vPosiciones[i].getDorsal().equals(vCoches[j].getDorsal())) {
+						vCoches[j].setPosicion(vPosiciones[i].getPosicion());
+						break;
+					
+					}
 				}
 			}
 		}
@@ -118,16 +136,29 @@ public class Carrera {
 		Scanner leer = new Scanner(System.in);
 		int userInput = 0;
 		boolean accionValida = true;
+		String opc1="1 Arrancar";
+		String opc2="1 Acelerar";
+		String opc3="2 Frenar";
 
 		if (jugador.isEnMarcha() || vOrdenLlegada[0] == null) {
 
+			
+			
 			do {
 				pintarGraficos();
 				pintarSalpicadero(jugador);
 				if (jugador.isEnMarcha()) {
-					System.out.print("                                  [ 2-Acelerar  |  3-Frenar ]  > ");
+					for (int i=0; i<(ANCHOTOTAL-(opc2.length()+opc3.length()+10))/2; i++) {
+						System.out.print(" ");
+					}
+					
+					System.out.print("[ " + opc2 + " | " + opc3 + " ]" + " > ");
 				} else {
-					System.out.print("                                        [ 1-Arrancar ]  > ");
+					for (int i=0; i<(ANCHOTOTAL-(opc1.length()+7))/2; i++) {
+						System.out.print(" ");
+					}
+					
+					System.out.print("[ " + opc1 + " ]" + " > ");
 				}
 				do {
 					try {
@@ -303,7 +334,14 @@ public class Carrera {
 			}
 
 		}
-		return anchoNombres;
+		
+		if (anchoNombres % 2 !=0) {
+			return anchoNombres;
+		} else {
+			return anchoNombres;
+		}
+		
+//		return anchoNombres;
 	}
 
 	public void imprimirClasificacion() {
@@ -542,10 +580,17 @@ public class Carrera {
 	public void pintarSalpicadero(Coche coche) {
 		String velocidadString = String.valueOf(coche.getVelocidad()) + " km/h";
 		String kmsString = String.format("%.1f", coche.getKms()) + " km";
-		String posicionString = String.valueOf(coche.getPosicion()) + "º";
+		String posicionString;
 		String estado = "";
 		String numJugadorString;
 
+		// CONTROLA QUE LA POSICIÓN SE MUESTRE ÚNICAMENTE SI ES VÁLIDA
+		if (coche.getPosicion()!=0) {
+			posicionString=String.valueOf(coche.getPosicion()) + "º";
+		} else {
+			posicionString="--";
+		}
+		
 		numJugadorString = "JUGADOR " + coche.getNumJugador() + ": " + coche.getPiloto();
 
 		if (coche.isAccidentado()) {
@@ -659,7 +704,7 @@ public class Carrera {
 
 	public void pintarGraficos() {
 
-		anchoPista = ANCHOTOTAL - (anchoNombres() + 23);
+		
 		int distanciaRecorrida = 0;
 		int distanciaRestante = 0;
 		float unidadAvance = longitud / anchoPista;
@@ -667,6 +712,15 @@ public class Carrera {
 		String cochePc = "[»D)";
 		String cocheAcc = "[XX)";
 		String cochecito = "";
+		String rankingString;
+		
+		// CONTROLA DESCUADRES POCO FRECUENTES PROVOCADOS POR REDONDEOS
+		if ((ANCHOTOTAL - (anchoNombres() + 23) %5 != 0)) {
+			anchoPista = ANCHOTOTAL - (anchoNombres() + 24);
+		} else {
+			anchoPista = ANCHOTOTAL - (anchoNombres() + 23);
+		}
+		
 
 		pintarNombreCarrera();
 		pintarLateralPista();
@@ -726,23 +780,30 @@ public class Carrera {
 					System.out.print(" ");
 				}
 
-				String ranking = String.valueOf(coche.getPosicion() + "º");
+				if ((!coche.isTerminado() && coche.isEnMarcha()) && numTurno > 2) {
+					rankingString = String.valueOf(coche.getPosicion() + "º");
+				} else {
+					if (coche.isTerminado()) {
+						rankingString = "✔";
+					} else {
+						if (coche.isAccidentado()) {
+							rankingString = "⚠";
+						} else {
+							rankingString = "--";
+						}
+						
+					}
+				}
 
-				if (ranking.length() < 3)
-					ranking += " ";
+				if (rankingString.length() < 3)
+					rankingString += " ";
 
-				System.out.println("║ ▀▄▀▄ " + ranking + " [" + coche.getDorsal() + " - " + coche.getPiloto() + "]");
+				System.out.println("║ ▀▄▀▄ " + rankingString + " [" + coche.getDorsal() + " - " + coche.getPiloto() + "]");
 			}
 
 		}
 
 		pintarLateralPista();
-
-		pintarSalpicadero();
-
-	}
-
-	private void pintarSalpicadero() {
 
 	}
 
