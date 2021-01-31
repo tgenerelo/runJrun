@@ -40,7 +40,7 @@ public class Carrera {
 		int posicion = 1;
 		vAux = vCoches.clone();
 
-		for (int m = 0; m < vAux.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
+		for (int m = 0; m < vPosiciones.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
 			exch = 0;
 			for (int i = 0; i < vAux.length; i++) { // BUSCA LA MAYOR DISTANCIA RECORRIDA
 				if (vAux[i] != null && (vAux[i].getKms() > exch)) {
@@ -93,16 +93,65 @@ public class Carrera {
 	}
 
 	public void prepararCarrera() {
+		
+		Random r = new Random();
+		int random = 0;
+		boolean asignado=false;
+		
+		Coche vParticipantes[];
+		
 		if (numCompetidores<numJugadores)
 			numCompetidores=numJugadores;
+		
+		vParticipantes = new Coche[numCompetidores];
+		
+		// COLOCA LOS COCHES EN UN ORDEN AL AZAR EN vCoches
+		for (Coche coche : vCoches) {
+			if (coche!=null) {
+				do {
+					random = r.nextInt(vParticipantes.length);
+					if (vParticipantes[random] == null) {
+						vParticipantes[random] = coche;
+						asignado = true;
+					} else {
+						asignado = false;
+					}
+				} while (asignado == false);
+			}
+		}
+		
+		vCoches=vParticipantes;
+		
 		for (int i = 0; i < vCoches.length; i++) {
 			if (vCoches[i] == null) {
 				agregarCoche(new Coche());
 				i--;
 			}
 		}
+		
+		if (nombre.equals("")) {
+			generarNombreGP();
+		}
 	}
 
+	public void comenzar() {
+		prepararCarrera();
+		do {
+			turnoCarrera();
+		} while (!isTerminada());
+
+		imprimirClasificacion();
+	}
+	
+	private void generarNombreGP() {
+		Random r = new Random();
+		String vEdicion[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
+		String vGP[] = {"Gran Premio", "Grand Prix", "Premio", "Carrera"};
+		String vLugar[] = {"Java", "Alcañiz"};
+		
+		nombre = vEdicion[r.nextInt(vEdicion.length)] + " " + vGP[r.nextInt(vGP.length)] + " de " + vLugar[r.nextInt(vLugar.length)];
+	}
+	
 	public void agregarCoche(Coche coche) {
 		Random r = new Random();
 		int random = 0;
@@ -120,7 +169,7 @@ public class Carrera {
 
 		comprobarDorsal(coche);
 
-		// COLOCA LOS COCHES EN UN ORDEN AL AZAR EN vCoches
+//		// COLOCA LOS COCHES EN UN ORDEN AL AZAR EN vCoches
 		do {
 			random = r.nextInt(vCoches.length);
 			if (vCoches[random] == null) {
@@ -239,7 +288,7 @@ public class Carrera {
 
 		for (int i = 1; i <= numJugadores; i++) {
 			for (int j = 0; j < vCoches.length; j++) {
-				if (vCoches[j].getNumJugador() == i) {
+				if (vCoches[j]!=null && vCoches[j].getNumJugador() == i) {
 					turnoJugador(vCoches[j]);
 					vCoches[j]
 							.setVelocidadMedia((vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
@@ -298,6 +347,31 @@ public class Carrera {
 		}
 		reordenarLlegada();
 		return true;
+	}
+	
+	private void resetearCarrera() {
+		this.nombre = "";
+		this.patrocinador = generarPatrocinador();
+		this.longitud = 5;
+		this.numCompetidores = 9;
+		this.vCoches = new Coche[numCompetidores];
+		this.vOrdenLlegada = new Coche[numCompetidores];
+		this.vPosiciones = new Coche[numCompetidores];
+		this.numTurno = 0;
+		this.numJugadores = 0;
+		
+		for (Coche coche : vCoches) {
+			coche=null;
+		}
+		
+		for (Coche coche : vOrdenLlegada) {
+			coche=null;
+		}
+		
+		for (Coche coche : vPosiciones) {
+			
+		}
+		
 	}
 
 	private void reordenarLlegada() {
@@ -378,7 +452,7 @@ public class Carrera {
 			System.out.print(" ");
 		}
 		System.out.print("│");
-		for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 9)
+		for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 8)
 				- titulo.length()) / 2); i++) {
 			System.out.print(" ");
 		}
@@ -745,6 +819,10 @@ public class Carrera {
 
 	public int getNumJugadores() {
 		return numJugadores;
+	}
+
+	public Coche[] getvCoches() {
+		return vCoches;
 	}
 
 	public void setNumJugadores(int numJugadores) {
