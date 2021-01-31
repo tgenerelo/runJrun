@@ -17,8 +17,8 @@ public class Coche {
 	private boolean jugador;
 	private int numJugador;
 
-	private final int POTENCIA = 50;
-	private final int SEGUNDOSTURNO = 10;
+	private final int POTENCIA = Main.POTENCIA;
+	private final int SEGUNDOSTURNO = Main.SEGUNDOSTURNO;
 
 	public Coche() {
 		this.piloto = generarNombre();
@@ -89,7 +89,6 @@ public class Coche {
 
 	public String generarDorsal() {
 		Random r = new Random();
-
 		return String.valueOf(r.nextInt(100));
 	}
 
@@ -252,6 +251,10 @@ public class Coche {
 
 	public boolean isJugador() {
 		return jugador;
+	}
+
+	public void setPiloto(String piloto) {
+		this.piloto = piloto;
 	}
 
 	public void setJugador(boolean jugador) {

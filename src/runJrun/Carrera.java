@@ -2,6 +2,7 @@ package runJrun;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.EnumSet;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class Carrera {
 	private int numTurno;
 	private int numJugadores;
 
-	private final int ANCHOTOTAL = 160;
+	private final int ANCHOTOTAL = Main.ANCHOTOTAL;
 	private int anchoPista = ANCHOTOTAL - 40;
 
 	public Carrera(String nombre, float longitud, int numCompetidores) {
@@ -36,9 +37,8 @@ public class Carrera {
 
 		Coche vAux[] = new Coche[vCoches.length];
 		float exch = 0f;
-		int posicion=1;
+		int posicion = 1;
 		vAux = vCoches.clone();
-		
 
 		for (int m = 0; m < vAux.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
 			exch = 0;
@@ -47,7 +47,8 @@ public class Carrera {
 					exch = vAux[i].getKms(); // ALMACENA LA MAYOR DISTANCIA RECORRIDA
 				}
 			}
-			for (int j = 0; j < vAux.length; j++) { // ENCUENTRA EL COCHE CON LA MAYOR DISTANCIA RECORRIDA QUE NO ESTÉ ACCIDENTADO
+			for (int j = 0; j < vAux.length; j++) { // ENCUENTRA EL COCHE CON LA MAYOR DISTANCIA RECORRIDA QUE NO ESTÉ
+													// ACCIDENTADO
 				if (vAux[j] != null && vAux[j].getKms() == exch) {
 					vPosiciones[m] = vAux[j]; // ASIGNA EL COCHE EN EL PRIMER HUECO LIBRE DE vPosiciones
 					vAux[j] = null; // ELIMINA EL COCHE DE vAux PARA QUE NO LO VUELVA A ENCONTRAR
@@ -57,17 +58,18 @@ public class Carrera {
 					} else {
 						vPosiciones[m].setPosicion(0);
 					}
-					
+
 					break;
 				}
 			}
-			
-			for (int i=0; i<vPosiciones.length; i++) {
-				for (int j=0; j<vCoches.length; j++) {
-					if ((vPosiciones[i] != null && vCoches[j] != null) && vPosiciones[i].getDorsal().equals(vCoches[j].getDorsal())) {
+
+			for (int i = 0; i < vPosiciones.length; i++) {
+				for (int j = 0; j < vCoches.length; j++) {
+					if ((vPosiciones[i] != null && vCoches[j] != null)
+							&& vPosiciones[i].getDorsal().equals(vCoches[j].getDorsal())) {
 						vCoches[j].setPosicion(vPosiciones[i].getPosicion());
 						break;
-					
+
 					}
 				}
 			}
@@ -78,13 +80,21 @@ public class Carrera {
 
 		for (int j = 0; j < vCoches.length; j++) {
 			if (vCoches[j] != null && coche.getDorsal().equalsIgnoreCase(vCoches[j].getDorsal())) {
-				coche.setDorsal(coche.generarDorsal());
+				coche.setDorsal(generarDorsal());
 				j = 0;
 			}
 		}
 	}
 
+	public String generarDorsal() {
+		Random r = new Random();
+
+		return String.valueOf(r.nextInt(numCompetidores + 1));
+	}
+
 	public void prepararCarrera() {
+		if (numCompetidores<numJugadores)
+			numCompetidores=numJugadores;
 		for (int i = 0; i < vCoches.length; i++) {
 			if (vCoches[i] == null) {
 				agregarCoche(new Coche());
@@ -97,8 +107,13 @@ public class Carrera {
 		Random r = new Random();
 		int random = 0;
 		boolean asignado = false;
+		
+		
 
 		if (coche.isJugador()) {
+			if (coche.getDorsal().equals("-?!#")) {
+				coche.setDorsal(String.valueOf(r.nextInt(100)));
+			}
 			numJugadores++;
 			coche.setNumJugador(numJugadores);
 		}
@@ -118,53 +133,36 @@ public class Carrera {
 		} while (asignado == false);
 	}
 
-//	private void asignarDorsalesCoches() {
-//
-//		for (Coche coche : vCoches) {
-//			if (coche != null) {
-//				for (int j = 0; j < vPosiciones.length; j++) {
-//					if (coche.getDorsal().equals(vPosiciones[j].getDorsal())) {
-//						coche.setPosicion(j + 1);
-//						break;
-//					}
-//				}
-//			}
-//		}
-//	}
-
 	private void turnoJugador(Coche jugador) {
 		Scanner leer = new Scanner(System.in);
 		int userInput = 0;
 		boolean accionValida = true;
-		String opc1="1 Arrancar";
-		String opc2="1 Acelerar";
-		String opc3="2 Frenar";
+		String opc1 = "1 Arrancar";
+		String opc2 = "2 Acelerar";
+		String opc3 = "3 Frenar";
 
 		if (jugador.isEnMarcha() || vOrdenLlegada[0] == null) {
-
-			
-			
 			do {
 				pintarGraficos();
 				pintarSalpicadero(jugador);
+				System.out.println();
 				if (jugador.isEnMarcha()) {
-					for (int i=0; i<(ANCHOTOTAL-(opc2.length()+opc3.length()+10))/2; i++) {
+					for (int i = 0; i < (ANCHOTOTAL - (opc2.length() + opc3.length() + 11)) / 2; i++) {
 						System.out.print(" ");
 					}
-					
-					System.out.print("[ " + opc2 + " | " + opc3 + " ]" + " > ");
+
+					System.out.print("[ " + opc2 + " ] [ " + opc3 + " ]" + " > ");
 				} else {
-					for (int i=0; i<(ANCHOTOTAL-(opc1.length()+7))/2; i++) {
+					for (int i = 0; i < (ANCHOTOTAL - (opc1.length() + 8)) / 2; i++) {
 						System.out.print(" ");
 					}
-					
+
 					System.out.print("[ " + opc1 + " ]" + " > ");
 				}
 				do {
 					try {
 						userInput = leer.nextInt();
 					} catch (InputMismatchException e) {
-						System.out.println("** ERROR: Opción no válida **");
 						accionValida = false;
 						leer = new Scanner(System.in);
 					}
@@ -185,9 +183,6 @@ public class Carrera {
 					}
 				}
 
-				if (accionValida == false)
-					System.out.println("** ERROR: Acción no válida **");
-
 			} while (accionValida == false);
 
 			switch (userInput) {
@@ -200,6 +195,18 @@ public class Carrera {
 			case 3:
 				jugador.frenar();
 				break;
+			}
+
+			if (numJugadores > 1 && numTurno > 1) {
+				pintarGraficos();
+				pintarSalpicadero(jugador);
+				System.out.println();
+				System.out.println();
+				try {
+					Thread.sleep(1600);
+				} catch (InterruptedException e) {
+
+				}
 			}
 		}
 	}
@@ -277,7 +284,6 @@ public class Carrera {
 
 		coche.setTiempo((numTurno * 10) - (coche.getKms() - longitud) * 10); // El tiempo que ha logrado el coche en
 																				// segundos.
-
 	}
 
 	public boolean isTerminada() {
@@ -332,16 +338,13 @@ public class Carrera {
 				if (coche.getPiloto().length() > anchoNombres)
 					anchoNombres = coche.getPiloto().length();
 			}
-
 		}
-		
-		if (anchoNombres % 2 !=0) {
+
+		if (anchoNombres % 2 != 0) {
 			return anchoNombres;
 		} else {
 			return anchoNombres;
 		}
-		
-//		return anchoNombres;
 	}
 
 	public void imprimirClasificacion() {
@@ -351,40 +354,45 @@ public class Carrera {
 		String titulo = "CLASIFICACIÓN FINAL";
 		int anchoNombres = anchoNombres();
 		int anchoTiempo = 23;
-		int anchoRanking = 3;
+		int anchoRanking = (String.valueOf(numCompetidores).length() + 1);
 
 		pintarGraficos();
 
 		System.out.println();
 
 //		CABECERA (BORDE SUPERIOR)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 11)) / 2); i++) {
+		for (int i = 0; i < ((ANCHOTOTAL
+				- ((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 11)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("┌");
-		for (int i = 0; i < (anchoRanking + anchoNombres + anchoTiempo + 9); i++) {
+		for (int i = 0; i < ((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 9); i++) {
 			System.out.print("─");
 		}
 
 		System.out.println("┐");
 
 //		CABECERA (TÍTULO)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 11)) / 2); i++) {
+		for (int i = 0; i < ((ANCHOTOTAL
+				- ((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 11)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("│");
-		for (int i = 0; i < (((anchoRanking + anchoNombres + anchoTiempo + 9) - titulo.length()) / 2); i++) {
+		for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 9)
+				- titulo.length()) / 2); i++) {
 			System.out.print(" ");
 		}
 
 		System.out.print(titulo);
 
 		if ((anchoNombres + anchoTiempo + 12) % 2 != 0) {
-			for (int i = 0; i < (((anchoRanking + anchoNombres + anchoTiempo + 10) - titulo.length()) / 2); i++) {
+			for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 10)
+					- titulo.length()) / 2); i++) {
 				System.out.print(" ");
 			}
 		} else {
-			for (int i = 0; i < (((anchoRanking + anchoNombres + anchoTiempo + 11) - titulo.length()) / 2); i++) {
+			for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 11)
+					- titulo.length()) / 2); i++) {
 				System.out.print(" ");
 			}
 		}
@@ -392,12 +400,12 @@ public class Carrera {
 		System.out.println("│");
 
 //		 SEPARADOR TABLA
-
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 11)) / 2); i++) {
+		for (int i = 0; i < ((ANCHOTOTAL
+				- ((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 11)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("├");
-		for (int i = 0; i < anchoRanking + 2; i++) {
+		for (int i = 0; i < (String.valueOf(numCompetidores).length() + 1) + 2; i++) {
 			System.out.print("─");
 		}
 
@@ -426,11 +434,14 @@ public class Carrera {
 					System.out.print(" ");
 				}
 
-				if (rankingString.length() < anchoRanking) {
-					System.out.print("│ " + rankingString + "  │ " + coche.getPiloto());
-				} else {
-					System.out.print("│ " + rankingString + " │ " + coche.getPiloto());
-				}
+				do {
+					if (rankingString.length() < anchoRanking) {
+						rankingString = " " + rankingString;
+					} else {
+						System.out.print("│ " + rankingString + " │ " + coche.getPiloto());
+						break;
+					}
+				} while (true);
 
 				for (int i = 0; i < anchoNombres - coche.getPiloto().length(); i++) {
 					System.out.print(" ");
@@ -449,7 +460,7 @@ public class Carrera {
 			System.out.print(" ");
 		}
 		System.out.print("└");
-		for (int i = 0; i < anchoRanking + 2; i++) {
+		for (int i = 0; i < (String.valueOf(numCompetidores).length() + 1) + 2; i++) {
 			System.out.print("─");
 		}
 
@@ -466,6 +477,16 @@ public class Carrera {
 		}
 
 		System.out.println("┘");
+		
+		System.out.println();
+		Scanner leer = new Scanner(System.in);
+		int userInp=0;
+		for (int i=0; i<((ANCHOTOTAL - "[ 1. Continuar ] >  ".length()))/2; i++) {
+			System.out.print(" ");
+		}
+		System.out.print("[ 1. Continuar ] > ");
+		userInp=leer.nextInt();
+		
 	}
 
 	private String generarPatrocinador() {
@@ -501,6 +522,18 @@ public class Carrera {
 
 	public Coche[] getvOrdenLlegada() {
 		return vOrdenLlegada;
+	}
+
+	public void setPatrocinador(String patrocinador) {
+		this.patrocinador = patrocinador;
+	}
+
+	public void setLongitud(float longitud) {
+		this.longitud = longitud;
+	}
+
+	public void setNumCompetidores(int numCompetidores) {
+		this.numCompetidores = numCompetidores;
 	}
 
 	private void pintarNombreCarrera() {
@@ -582,16 +615,24 @@ public class Carrera {
 		String kmsString = String.format("%.1f", coche.getKms()) + " km";
 		String posicionString;
 		String estado = "";
-		String numJugadorString;
+		String numJugadorString = "";
+		int anchoSeparadores = 0;
+
+		if (numJugadores > 1) {
+			anchoSeparadores = 18;
+		} else {
+			anchoSeparadores = 13;
+		}
 
 		// CONTROLA QUE LA POSICIÓN SE MUESTRE ÚNICAMENTE SI ES VÁLIDA
-		if (coche.getPosicion()!=0) {
-			posicionString=String.valueOf(coche.getPosicion()) + "º";
+		if (numTurno > 2 && coche.getPosicion() != 0) {
+			posicionString = String.valueOf(coche.getPosicion()) + "º";
 		} else {
-			posicionString="--";
+			posicionString = "--";
 		}
-		
-		numJugadorString = "JUGADOR " + coche.getNumJugador() + ": " + coche.getPiloto();
+
+		if (numJugadores > 1)
+			numJugadorString = "JUGADOR " + coche.getNumJugador() + ": " + coche.getPiloto();
 
 		if (coche.isAccidentado()) {
 			estado = "ACCIDENTADO";
@@ -607,15 +648,17 @@ public class Carrera {
 
 		// SALPICADERO (BORDE SUPERIOR)
 		for (int i = 0; i < ((ANCHOTOTAL - ((velocidadString.length() + kmsString.length() + posicionString.length()
-				+ estado.length() + numJugadorString.length()) + 18)) / 2); i++) {
+				+ estado.length() + numJugadorString.length()) + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 
-		System.out.print("╔");
-		for (int i = 0; i < numJugadorString.length() + 2; i++) {
-			System.out.print("═");
+		if (numJugadores > 1) {
+			System.out.print("╔");
+			for (int i = 0; i < numJugadorString.length() + 2; i++) {
+				System.out.print("═");
+			}
+			System.out.print("╗ ");
 		}
-		System.out.print("╗ ");
 
 		System.out.print("╔");
 
@@ -645,27 +688,32 @@ public class Carrera {
 
 		// SALPICADERO (CONTENIDO)
 		for (int i = 0; i < ((ANCHOTOTAL - ((velocidadString.length() + kmsString.length() + posicionString.length()
-				+ estado.length() + numJugadorString.length()) + 18)) / 2); i++) {
+				+ estado.length() + numJugadorString.length()) + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 
-		System.out.print("║ ");
-		System.out.print(numJugadorString);
-		System.out.print(" ║ ");
+		if (numJugadores > 1) {
+			System.out.print("║ ");
+			System.out.print(numJugadorString);
+			System.out.print(" ║ ");
+
+		}
 
 		System.out.println("║ " + velocidadString + " ║ " + kmsString + " ║ " + posicionString + " ║ " + estado + " ║");
 
 		// SALPICADERO (BORDE INFERIOR)
 		for (int i = 0; i < ((ANCHOTOTAL - ((velocidadString.length() + kmsString.length() + posicionString.length()
-				+ estado.length() + numJugadorString.length()) + 18)) / 2); i++) {
+				+ estado.length() + numJugadorString.length()) + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 
-		System.out.print("╚");
-		for (int i = 0; i < numJugadorString.length() + 2; i++) {
-			System.out.print("═");
+		if (numJugadores > 1) {
+			System.out.print("╚");
+			for (int i = 0; i < numJugadorString.length() + 2; i++) {
+				System.out.print("═");
+			}
+			System.out.print("╝ ");
 		}
-		System.out.print("╝ ");
 
 		System.out.print("╚");
 
@@ -695,6 +743,14 @@ public class Carrera {
 
 	}
 
+	public int getNumJugadores() {
+		return numJugadores;
+	}
+
+	public void setNumJugadores(int numJugadores) {
+		this.numJugadores = numJugadores;
+	}
+
 	private void pintarLateralPista() {
 		for (int i = 0; i < ANCHOTOTAL; i++) {
 			System.out.print("■");
@@ -704,7 +760,6 @@ public class Carrera {
 
 	public void pintarGraficos() {
 
-		
 		int distanciaRecorrida = 0;
 		int distanciaRestante = 0;
 		float unidadAvance = longitud / anchoPista;
@@ -713,15 +768,14 @@ public class Carrera {
 		String cocheAcc = "[XX)";
 		String cochecito = "";
 		String rankingString;
-		
+
 		// CONTROLA DESCUADRES POCO FRECUENTES PROVOCADOS POR REDONDEOS
-		if ((ANCHOTOTAL - (anchoNombres() + 23) %5 != 0)) {
+		if ((ANCHOTOTAL - (anchoNombres() + 23) % 2 != 0)) {
 			anchoPista = ANCHOTOTAL - (anchoNombres() + 24);
 		} else {
 			anchoPista = ANCHOTOTAL - (anchoNombres() + 23);
 		}
-		
-
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		pintarNombreCarrera();
 		pintarLateralPista();
 
@@ -782,6 +836,15 @@ public class Carrera {
 
 				if ((!coche.isTerminado() && coche.isEnMarcha()) && numTurno > 2) {
 					rankingString = String.valueOf(coche.getPosicion() + "º");
+					do {
+						if (rankingString.length() < (String.valueOf(numCompetidores).length() + 1)) {
+							rankingString = " " + rankingString;
+						} else {
+							if (rankingString.length() == (String.valueOf(numCompetidores).length() + 1))
+								break;
+						}
+					} while (true);
+
 				} else {
 					if (coche.isTerminado()) {
 						rankingString = "✔";
@@ -791,14 +854,15 @@ public class Carrera {
 						} else {
 							rankingString = "--";
 						}
-						
+
 					}
 				}
 
 				if (rankingString.length() < 3)
 					rankingString += " ";
 
-				System.out.println("║ ▀▄▀▄ " + rankingString + " [" + coche.getDorsal() + " - " + coche.getPiloto() + "]");
+				System.out.println(
+						"║ ▀▄▀▄ " + rankingString + " [" + coche.getDorsal() + " - " + coche.getPiloto() + "]");
 			}
 
 		}

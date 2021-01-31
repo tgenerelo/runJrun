@@ -1,25 +1,30 @@
 package runJrun;
 
-import java.util.Scanner;
-
 public class Main {
+	
+	static int ANCHOTOTAL = 120;
+	static int POTENCIA = 50;
+	static int SEGUNDOSTURNO = 10;
+	static Carrera carrera = new Carrera("", 5, 9);
 
 	public static void main(String[] args) {
-		Scanner leer = new Scanner(System.in);
 		
-		Carrera carrera = new Carrera("I Gran Premio de Java", 5f, 12);
+		carrera = new Carrera("", 5, 9);
 		
-		carrera.agregarCoche(new Coche("Tomás Generelo", true, "17"));
+		Menu.menuPrincipal();
 		
-		carrera.prepararCarrera();
-
-		do {
-			carrera.turnoCarrera();
-		} while (carrera.isTerminada()==false);
-
-		carrera.imprimirClasificacion();
-
-		leer.close();
+		
+//		Carrera carrera = new Carrera("I Gran Premio de Java", 5f, 10);
+//		
+//		carrera.agregarCoche(new Coche("Tomás Generelo", true, "17"));
+//		
+//		carrera.prepararCarrera();
+//
+//		do {
+//			carrera.turnoCarrera();
+//		} while (carrera.isTerminada()==false);
+//
+//		carrera.imprimirClasificacion();
 		
 	}
 
