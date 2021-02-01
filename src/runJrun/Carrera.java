@@ -469,7 +469,7 @@ public class Carrera {
 		System.out.print(titulo);
 
 		if ((anchoNombres + anchoTiempo + 12) % 2 != 0) {
-			for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 10)
+			for (int i = 0; i < ((((String.valueOf(numCompetidores).length() + 1) + anchoNombres + anchoTiempo + 11)
 					- titulo.length()) / 2); i++) {
 				System.out.print(" ");
 			}
