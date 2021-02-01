@@ -2,42 +2,82 @@ package runJrun;
 
 import java.util.Random;
 
+/**
+ * Un coche está compuesto por el nombre de su piloto y un código de dorsal.
+ * Además, posee información sobre su estado actual, velocidad, kilómetros
+ * recorridos, etc.
+ * 
+ * @author Tomás Generelo
+ *
+ */
 public class Coche {
 	private String piloto;
 	private String dorsal;
 	private int velocidad;
+	private int velocidadMedia;
+	private int posicion;
+	private int posicionFinal;
 	private float kms;
+	private float tiempo;
 	private boolean enMarcha;
 	private boolean accidentado;
 	private boolean terminado;
 	private boolean jugador;
+	private int numJugador;
 
-	final int POTENCIA = 50;
-	final int SEGUNDOSTURNO = 10;
+	private final int POTENCIA = Main.POTENCIA;
+	private final int SEGUNDOSTURNO = Main.SEGUNDOSTURNO;
 
+	/**
+	 * Genera automáticamente todos los datos de inicio del coche, incluyendo un
+	 * nombre del piloto y su dorsal al azar.
+	 */
 	public Coche() {
 		this.piloto = generarNombre();
 		this.dorsal = generarDorsal();
 		this.velocidad = 0;
+		this.velocidadMedia = 0;
+		this.posicion = 0;
+		this.posicionFinal = 0;
 		this.kms = 0;
+		this.tiempo = 0;
 		this.enMarcha = false;
 		this.accidentado = false;
 		this.terminado = false;
 		this.jugador = false;
+		this.numJugador = -1;
 	}
 
-	public Coche(String piloto, String dorsal, boolean jugador) {
-		super();
+	/**
+	 * Genera un piloto personalizado que puede ser controlado por un jugador humano
+	 * o por el programa.
+	 * 
+	 * @param piloto  El nombre del piloto.
+	 * @param jugador true si el coche estará controlado por un jugador, false si
+	 *                estará controlado por el programa.
+	 * @param dorsal  El código del dorsal.
+	 */
+	public Coche(String piloto, boolean jugador, String dorsal) {
 		this.piloto = piloto;
 		this.dorsal = dorsal;
 		this.velocidad = 0;
+		this.velocidadMedia = 0;
+		this.posicion = 0;
+		this.posicionFinal = 0;
 		this.kms = 0;
+		this.tiempo = 0;
 		this.enMarcha = false;
 		this.accidentado = false;
 		this.terminado = false;
 		this.jugador = jugador;
+		this.numJugador = 0;
 	}
 
+	/**
+	 * Genera un nombre aleatorio para un piloto.
+	 * 
+	 * @return Un nombre completo compuesto de nombre y apellido.
+	 */
 	private String generarNombre() {
 		Random r = new Random();
 		String vNombres[] = { "Otis", "Blake", "Harley", "James", "Charles", "Wayne", "Sherman", "Floyd", "Ash", "Roy",
@@ -65,34 +105,61 @@ public class Coche {
 		return vNombres[r.nextInt(vNombres.length)] + " " + vApellidos[r.nextInt(vApellidos.length)];
 	}
 
-	private String generarDorsal() {
+	/**
+	 * Genera un código aleatorio de dorsal.
+	 * 
+	 * @return La representación en forma de String de un número entre 0 y 100. Este
+	 *         método puede ser sobreescrito desde Carrera.
+	 */
+	public String generarDorsal() {
 		Random r = new Random();
-
 		return String.valueOf(r.nextInt(100));
 	}
 
+	/**
+	 * Resetea el estado del coche a "enMarcha". El estado "accidentado" también se
+	 * reinicia.
+	 */
 	public void arrancar() {
 		enMarcha = true;
 		accidentado = false;
 	}
 
+	/**
+	 * La velocidad del coche se ve incrementada por un valor al azar entre 0 y
+	 * POTENCIA. Si supera los 200 km/h el coche se accidentará y dejará de avanzar.
+	 * En caso contrario, el coche avanzará la cantidad de metros correspondiente a
+	 * los segundos que dura cada turno (definido en SEGUNDOSTURNO) a la velocidad
+	 * actual.
+	 */
 	public void acelerar() {
 		Random r = new Random();
 
 		if (!accidentado && isEnMarcha()) {
 			velocidad += r.nextInt(POTENCIA);
+
+			// El cálculo del avance se realiza mediante la siguiente fórmula:
+			// ((Conversión a m/s) * segundos que dura cada turno / conversión a km)
+			/*
+			 * En caso de accidente (> 200 km/h), la distancia recorrida se divide entre 5
+			 * como penalización.
+			 */
+
 			if (velocidad > 200) {
-				kms += (((velocidad / 3.6f) * SEGUNDOSTURNO / 1000) / 3); // ((Conversión a m/s) * segundos que dura cada turno /
-																// conversión a km)
+				kms += (((velocidad / 3.6f) * SEGUNDOSTURNO / 1000) / 5);
 				accidente();
 			} else {
-				kms += ((velocidad / 3.6f) * 10 / 1000); // ((Conversión a m/s) * 10 segundos cada turno / conversión a
-															// km)
+				kms += ((velocidad / 3.6f) * 10 / 1000);
 			}
 		}
-
 	}
 
+	/**
+	 * La velocidad del coche se ve reducida por un valor al azar entre 0 y
+	 * POTENCIA. El coche avanzará la cantidad de metros correspondiente a los
+	 * segundos que dura cada turno (definido en SEGUNDOSTURNO) a la velocidad
+	 * actual.
+	 */
 	public void frenar() {
 		Random r = new Random();
 
@@ -101,42 +168,26 @@ public class Coche {
 		if (velocidad < 0) {
 			velocidad = 0;
 		}
+
+		kms += ((velocidad / 3.6f) * 10 / 1000);
 	}
 
+	/**
+	 * Cambia el estado del coche a "accidentado" y resetea su velocidad a 0.
+	 */
 	public void accidente() {
 		enMarcha = false;
 		velocidad = 0;
 		accidentado = true;
 	}
+	
+	// GETTERS / SETTERS
+	public int getNumJugador() {
+		return numJugador;
+	}
 
-	public void estadoCoche() {
-		String estado = "";
-
-		if (accidentado) {
-			estado = "  ACCIDENTADO   ";
-		} else {
-			if (!isEnMarcha()) {
-				estado = "  NO ARRANCADO  ";
-			} else {
-				estado = "   EN CARRERA   ";
-			}
-		}
-
-		System.out.println("╔═══════════╦══════════╦══════════╦════════════════╗");
-		if (velocidad < 10) {
-			System.out.println("║   " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
-					+ estado + "║");
-		} else {
-			if (velocidad > 99) {
-				System.out.println("║ " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
-						+ estado + "║");
-			} else {
-				System.out.println("║  " + velocidad + " km/h  ║  " + String.format("%.1f", kms) + " km  ║    --    ║"
-						+ estado + "║");
-			}
-		}
-		System.out.println("╚═══════════╩══════════╩══════════╩════════════════╝");
-
+	public void setNumJugador(int numJugador) {
+		this.numJugador = numJugador;
 	}
 
 	public float getKms() {
@@ -187,18 +238,56 @@ public class Coche {
 		return velocidad;
 	}
 
+	public int getVelocidadMedia() {
+		return velocidadMedia;
+	}
+
+	public void setVelocidadMedia(int velMedia) {
+		velocidadMedia = velMedia;
+	}
+
+	public int getPosicion() {
+		return posicion;
+	}
+
+	public int getPosicionFinal() {
+		return posicionFinal;
+	}
+
+	public void setPosicionFinal(int posicion) {
+		this.posicionFinal = posicion;
+	}
+
+	public void setPosicion(int posicion) {
+		this.posicion = posicion;
+	}
+
 	public boolean isJugador() {
 		return jugador;
+	}
+
+	public void setPiloto(String piloto) {
+		this.piloto = piloto;
 	}
 
 	public void setJugador(boolean jugador) {
 		this.jugador = jugador;
 	}
 
+	public float getTiempo() {
+		return tiempo;
+	}
+
+	public void setTiempo(float tiempo) {
+		this.tiempo = tiempo;
+	}
+
+	// toString
 	@Override
 	public String toString() {
 		return "Coche " + dorsal + ": " + piloto + " | " + velocidad + " km/h | " + String.format("%.3f", kms)
-				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado :" + terminado;
+				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado: " + terminado
+				+ " | " + posicionFinal + " | " + posicion + " | " + tiempo + " segundos";
 	}
 
 }
