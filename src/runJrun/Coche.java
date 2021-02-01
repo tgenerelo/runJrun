@@ -146,10 +146,10 @@ public class Coche {
 			 */
 
 			if (velocidad > 200) {
-				kms += (((velocidad / 3.6f) * SEGUNDOSTURNO / 1000) / 5);
+				kms += (((velocidad / 3.6f) * Main.SEGUNDOSTURNO / 1000) / 5);
 				accidente();
 			} else {
-				kms += ((velocidad / 3.6f) * 10 / 1000);
+				kms += ((velocidad / 3.6f) * Main.SEGUNDOSTURNO / 1000);
 			}
 		}
 	}

@@ -60,8 +60,8 @@ public class Menu {
 				System.out.print(" ");
 			}
 			System.out.println(mensaje);
-			System.exit(0); // CAMBIAR EN CUANTO SEA POSIBLE
-
+			
+			Main.salir();
 			break;
 		}
 	}
@@ -97,7 +97,7 @@ public class Menu {
 		case 4:
 			carrera.setLongitud(
 					genMenuAjuste(vOpciones[3], new String[] { "La longitud en kilómetros que tendrá la carrera.", "  ",
-							"Mínimo: 0.1 km. Máximo: 300 km. Valor por defecto: 5 km" }, 0.1f, 300f));
+							"Mínimo: 0.1 km., Máximo: 300 km. Valor por defecto: 5 km" }, 0.1f, 300f));
 
 			break;
 		case 5:
@@ -132,14 +132,14 @@ public class Menu {
 		case 1:
 			Main.ANCHOTOTAL = genMenuAjuste(vOpciones[0],
 					new String[] { "El ancho máximo que tendrá la ventana de juego.", "  ",
-							"Mínimo: 80, máximo 400. Valor por defecto: 120." },
+							"Mínimo: 80, máximo: 400. Valor por defecto: 120." },
 					80, 400);
 			ANCHOTOTAL = Main.ANCHOTOTAL;
 			break;
 		case 2:
 			Main.SEGUNDOSTURNO = genMenuAjuste(vOpciones[1],
 					new String[] { "La duración en segundos de cada turno de juego.", "  ",
-							"Mínimo: 5, máximo 30. Valor por defecto: 10.", },
+							"Mínimo: 5, máximo: 30. Valor por defecto: 10.", },
 					5, 30);
 			break;
 		case 3:
