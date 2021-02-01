@@ -1,4 +1,4 @@
-# runJrun 1.0 #
+# runJrun 1.1 #
 ### Descripción ###
 runJrun es un juego de carreras por turnos que puede ser jugado en la consola de Eclipse.
 
