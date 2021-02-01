@@ -11,8 +11,4 @@ public class Main {
 		Menu.menuPrincipal();
 	}
 	
-	public static void salir() {
-		
-	}
-	
 }
