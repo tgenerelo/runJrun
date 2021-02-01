@@ -2,11 +2,19 @@ package runJrun;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.EnumSet;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Una carrera está compuesta por un número determinado de vehículos
+ * (controlados o no por un usuario), una distancia que recorrer y un número de
+ * turnos. Un objeto de tipo carrera recibe una representación gráfica en cada
+ * turno.
+ * 
+ * @author Tomás Generelo
+ *
+ */
 public class Carrera {
 	private String nombre;
 	private String patrocinador;
@@ -21,6 +29,18 @@ public class Carrera {
 	private final int ANCHOTOTAL = Main.ANCHOTOTAL;
 	private int anchoPista = ANCHOTOTAL - 40;
 
+	/**
+	 * Genera un nuevo objeto de tipo Carrera.
+	 * 
+	 * @param nombre          El nombre de la competición (por ejemplo, "Gran
+	 *                        Premio"). Puede ser modificado más adelante. Si la
+	 *                        carrera da comienzo sin nombre, se genera uno
+	 *                        automáticamente.
+	 * @param longitud        La longitud de la carrera, en kilómetros.
+	 * @param numCompetidores El número total de coches implicados en la carrera,
+	 *                        incluyendo los controlados por el usuario y los
+	 *                        controlados por el programa.
+	 */
 	public Carrera(String nombre, float longitud, int numCompetidores) {
 		this.nombre = nombre;
 		this.patrocinador = generarPatrocinador();
@@ -93,21 +113,22 @@ public class Carrera {
 	}
 
 	public void prepararCarrera() {
-		
+
 		Random r = new Random();
 		int random = 0;
-		boolean asignado=false;
-		
+		boolean asignado = false;
+
 		Coche vParticipantes[];
-		
-		if (numCompetidores<numJugadores)
-			numCompetidores=numJugadores;
-		
+
+		if (numCompetidores < numJugadores)
+			numCompetidores = numJugadores;
+
 		vParticipantes = new Coche[numCompetidores];
-		
+		vPosiciones = new Coche[numCompetidores];
+
 		// COLOCA LOS COCHES EN UN ORDEN AL AZAR EN vCoches
 		for (Coche coche : vCoches) {
-			if (coche!=null) {
+			if (coche != null) {
 				do {
 					random = r.nextInt(vParticipantes.length);
 					if (vParticipantes[random] == null) {
@@ -119,19 +140,20 @@ public class Carrera {
 				} while (asignado == false);
 			}
 		}
-		
-		vCoches=vParticipantes;
-		
+
+		vCoches = vParticipantes;
+
 		for (int i = 0; i < vCoches.length; i++) {
 			if (vCoches[i] == null) {
 				agregarCoche(new Coche());
 				i--;
 			}
 		}
-		
+
 		if (nombre.equals("")) {
 			generarNombreGP();
 		}
+
 	}
 
 	public void comenzar() {
@@ -142,22 +164,21 @@ public class Carrera {
 
 		imprimirClasificacion();
 	}
-	
+
 	private void generarNombreGP() {
 		Random r = new Random();
-		String vEdicion[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
-		String vGP[] = {"Gran Premio", "Grand Prix", "Premio", "Carrera"};
-		String vLugar[] = {"Java", "Alcañiz"};
-		
-		nombre = vEdicion[r.nextInt(vEdicion.length)] + " " + vGP[r.nextInt(vGP.length)] + " de " + vLugar[r.nextInt(vLugar.length)];
+		String vEdicion[] = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X" };
+		String vGP[] = { "Gran Premio", "Grand Prix", "Premio", "Carrera" };
+		String vLugar[] = { "Java", "Alcañiz" };
+
+		nombre = vEdicion[r.nextInt(vEdicion.length)] + " " + vGP[r.nextInt(vGP.length)] + " de "
+				+ vLugar[r.nextInt(vLugar.length)];
 	}
-	
+
 	public void agregarCoche(Coche coche) {
 		Random r = new Random();
 		int random = 0;
 		boolean asignado = false;
-		
-		
 
 		if (coche.isJugador()) {
 			if (coche.getDorsal().equals("-?!#")) {
@@ -288,7 +309,7 @@ public class Carrera {
 
 		for (int i = 1; i <= numJugadores; i++) {
 			for (int j = 0; j < vCoches.length; j++) {
-				if (vCoches[j]!=null && vCoches[j].getNumJugador() == i) {
+				if (vCoches[j] != null && vCoches[j].getNumJugador() == i) {
 					turnoJugador(vCoches[j]);
 					vCoches[j]
 							.setVelocidadMedia((vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
@@ -329,6 +350,13 @@ public class Carrera {
 		posicionCoches();
 	}
 
+	/**
+	 * Calcula el tiempo que ha tardado el coche en completar la carrera y lo
+	 * almacena en sus atributos. Si el coche no ha terminado la carrera, el cálculo
+	 * no es real pero puede utilizarse igualmente.
+	 * 
+	 * @param coche El coche del que se quiere calcular el tiempo.
+	 */
 	private void calcularTiempo(Coche coche) {
 
 		coche.setTiempo((numTurno * 10) - (coche.getKms() - longitud) * 10); // El tiempo que ha logrado el coche en
@@ -347,31 +375,6 @@ public class Carrera {
 		}
 		reordenarLlegada();
 		return true;
-	}
-	
-	private void resetearCarrera() {
-		this.nombre = "";
-		this.patrocinador = generarPatrocinador();
-		this.longitud = 5;
-		this.numCompetidores = 9;
-		this.vCoches = new Coche[numCompetidores];
-		this.vOrdenLlegada = new Coche[numCompetidores];
-		this.vPosiciones = new Coche[numCompetidores];
-		this.numTurno = 0;
-		this.numJugadores = 0;
-		
-		for (Coche coche : vCoches) {
-			coche=null;
-		}
-		
-		for (Coche coche : vOrdenLlegada) {
-			coche=null;
-		}
-		
-		for (Coche coche : vPosiciones) {
-			
-		}
-		
 	}
 
 	private void reordenarLlegada() {
@@ -431,8 +434,14 @@ public class Carrera {
 		int anchoRanking = (String.valueOf(numCompetidores).length() + 1);
 
 		pintarGraficos();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			
+		}
 
-		System.out.println();
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
 //		CABECERA (BORDE SUPERIOR)
 		for (int i = 0; i < ((ANCHOTOTAL
@@ -526,7 +535,6 @@ public class Carrera {
 				}
 				System.out.println("│");
 			}
-
 		}
 
 		// TERCERA LÍNEA (BORDE INFERIOR)
@@ -551,16 +559,11 @@ public class Carrera {
 		}
 
 		System.out.println("┘");
-		
+
 		System.out.println();
-		Scanner leer = new Scanner(System.in);
-		int userInp=0;
-		for (int i=0; i<((ANCHOTOTAL - "[ 1. Continuar ] >  ".length()))/2; i++) {
-			System.out.print(" ");
-		}
-		System.out.print("[ 1. Continuar ] > ");
-		userInp=leer.nextInt();
-		
+
+		Menu.pintarEscaner(1, 1);
+
 	}
 
 	private String generarPatrocinador() {
@@ -576,38 +579,6 @@ public class Carrera {
 				"Typhoonwater", "Hooklight", "Greenworld" };
 
 		return vPatrocinadores[r.nextInt(vPatrocinadores.length)];
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public float getLongitud() {
-		return longitud;
-	}
-
-	public int getNumCompetidores() {
-		return numCompetidores;
-	}
-
-	public Coche[] getvOrdenLlegada() {
-		return vOrdenLlegada;
-	}
-
-	public void setPatrocinador(String patrocinador) {
-		this.patrocinador = patrocinador;
-	}
-
-	public void setLongitud(float longitud) {
-		this.longitud = longitud;
-	}
-
-	public void setNumCompetidores(int numCompetidores) {
-		this.numCompetidores = numCompetidores;
 	}
 
 	private void pintarNombreCarrera() {
@@ -942,11 +913,42 @@ public class Carrera {
 				System.out.println(
 						"║ ▀▄▀▄ " + rankingString + " [" + coche.getDorsal() + " - " + coche.getPiloto() + "]");
 			}
-
 		}
 
 		pintarLateralPista();
 
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public float getLongitud() {
+		return longitud;
+	}
+
+	public int getNumCompetidores() {
+		return numCompetidores;
+	}
+
+	public Coche[] getvOrdenLlegada() {
+		return vOrdenLlegada;
+	}
+
+	public void setPatrocinador(String patrocinador) {
+		this.patrocinador = patrocinador;
+	}
+
+	public void setLongitud(float longitud) {
+		this.longitud = longitud;
+	}
+
+	public void setNumCompetidores(int numCompetidores) {
+		this.numCompetidores = numCompetidores;
 	}
 
 	@Override

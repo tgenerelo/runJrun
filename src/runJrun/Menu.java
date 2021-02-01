@@ -37,9 +37,10 @@ public class Menu {
 				System.out.print(" ");
 			}
 			System.out.println(mensaje);
+			System.exit(0); // CAMBIAR EN CUANTO SEA POSIBLE
+			
 			break;
 		}
-
 	}
 
 	private static void nuevoJugador() {
@@ -51,14 +52,17 @@ public class Menu {
 
 		switch (userInput) {
 		case 1:
-			coche.setPiloto(genMenuAjuste(("Nombre del jugador"), new String[] {
-					("Nombre del piloto controlado por el JUGADOR " + (carrera.getNumJugadores() + 1) + ".") }));
+			coche.setPiloto(genMenuAjuste(("Nombre del jugador"),
+					new String[] {
+							("Nombre del piloto controlado por el JUGADOR " + (carrera.getNumJugadores() + 1) + ".") },
+					"un nombre"));
 			break;
 		case 2:
 			coche.setDorsal(genMenuAjuste(("Número de dorsal"),
 					new String[] { ("Número de dorsal para el JUGADOR " + (carrera.getNumJugadores() + 1) + "."),
 							"Se recomienda un máximo de 2 caracteres alfanuméricos",
-							"(p. ej.: \"45\", \"AB\", \"4P\")" }));
+							"(p. ej.: \"45\", \"AB\", \"4P\")" },
+					"un código de dorsal"));
 			break;
 		case 3:
 			carrera.agregarCoche(coche);
@@ -85,8 +89,8 @@ public class Menu {
 			nuevoJugador();
 			break;
 		case 2:
-			carrera.setNombre(String
-					.valueOf(genMenuAjuste(vOpciones[1], new String[] { "El nombre que recibirá la carrera.", })));
+			carrera.setNombre(String.valueOf(
+					genMenuAjuste(vOpciones[1], new String[] { "El nombre que recibirá la carrera.", }, "un nombre")));
 			break;
 		case 3:
 			carrera.setNumCompetidores(genMenuAjuste(vOpciones[2],
@@ -104,8 +108,8 @@ public class Menu {
 
 			break;
 		case 5:
-			carrera.setPatrocinador(
-					genMenuAjuste(vOpciones[4], new String[] { "La empresa o marca que patrocina la carrera." }));
+			carrera.setPatrocinador(genMenuAjuste(vOpciones[4],
+					new String[] { "La empresa o marca que patrocina la carrera." }, "un patrocinador"));
 			break;
 		case 6:
 			carrera.comenzar();
@@ -184,9 +188,10 @@ public class Menu {
 		}
 	}
 
-	private static int pintarEscaner(int valorMin, int valorMax) {
+	public static int pintarEscaner(int valorMin, int valorMax) {
 		int userInput = 0;
 		String texto = "";
+		leer = new Scanner(System.in);
 
 		if (valorMin == valorMax) {
 			texto = "[ 1. Volver ] > ";
@@ -214,9 +219,11 @@ public class Menu {
 		}
 	}
 
-	private static float pintarEscaner(float valorMin, float valorMax) {
-		int userInput = 0;
+	private static float pintarEscanerFloat(float valorMin, float valorMax) {
+		String userInput = "";
+		float inputFloat = 0f;
 		String texto = "Introduce un valor: > ";
+		leer = new Scanner(System.in);
 
 		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
 			System.out.print(" ");
@@ -224,7 +231,8 @@ public class Menu {
 		System.out.print(texto);
 
 		try {
-			userInput = leer.nextInt();
+			leer = new Scanner(System.in);
+			inputFloat = Float.valueOf(userInput = leer.next());
 		} catch (InputMismatchException e) {
 			leer = new Scanner(System.in);
 			return -1;
@@ -233,16 +241,16 @@ public class Menu {
 			return -1;
 		}
 
-		if (userInput < valorMin || userInput > valorMax) {
+		if (inputFloat < valorMin || inputFloat > valorMax) {
 			return -1;
 		} else {
-			return userInput;
+			return inputFloat;
 		}
 	}
 
-	private static String pintarEscaner() {
+	private static String pintarEscaner(String nombreNombre) {
 		String userInput = "";
-		String texto = "Introduce un nombre: > ";
+		String texto = "Introduce " + nombreNombre + ": > ";
 		leer = new Scanner(System.in);
 
 		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
@@ -331,13 +339,13 @@ public class Menu {
 				System.out.println(mensError);
 			}
 
-			userInput = pintarEscaner(valorMin, valorMax);
+			userInput = pintarEscanerFloat(valorMin, valorMax);
 		} while (userInput == -1);
 
 		return userInput;
 	}
 
-	private static String genMenuAjuste(String titulo, String vDescripcion[]) {
+	private static String genMenuAjuste(String titulo, String vDescripcion[], String tipoDeDatoAIntroducir) {
 		String mensError = "Nombre no válido. Vuelve a intentarlo.";
 		String userInput = "";
 
@@ -352,7 +360,7 @@ public class Menu {
 				System.out.println(mensError);
 			}
 
-			userInput = pintarEscaner();
+			userInput = pintarEscaner(tipoDeDatoAIntroducir);
 		} while (userInput == ".!#$?");
 		return userInput;
 	}
@@ -388,11 +396,9 @@ public class Menu {
 
 			System.out.print(vDescripcion[j]);
 
-			
-				for (int i = 0; i < (((anchoOpciones - vDescripcion[j].length() + anchoSeparadores-1) / 2)); i++) {
-					System.out.print(" ");
-				}
-			
+			for (int i = 0; i < (((anchoOpciones - vDescripcion[j].length() + anchoSeparadores - 1) / 2)); i++) {
+				System.out.print(" ");
+			}
 
 			System.out.println("│");
 		}
