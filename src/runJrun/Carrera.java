@@ -214,7 +214,7 @@ public class Carrera {
 				coche.setTerminado(true);
 				coche.setMarcha(false);
 				calcularTiempo(coche);
-				coche.setPosicionFinal(numTurno);
+				coche.setTurnoLlegada(numTurno);
 				for (int i = 0; i < vOrdenLlegada.length; i++) {
 					if (vOrdenLlegada[i] == null) {
 						vOrdenLlegada[i] = coche;
@@ -417,8 +417,34 @@ public class Carrera {
 		float exch = 0f;
 		int posicion = 1;
 		vAux = vCoches.clone();
+		int primeraPosicionvOrdenLlegada=0;
+		
+		for (int i=0; i<vOrdenLlegada.length; i++) {
+			if (vOrdenLlegada[i]==null) {
+				posicion = i+1;
+				break;
+			}
+		}
+		
+		for (int i=0; i<vOrdenLlegada.length; i++) {
+			if (vOrdenLlegada[i]!=null) {
+				vOrdenLlegada[i].setPosicionFinal(i+1);
+			}
+		}
+		
+		for (int i=0; i<vOrdenLlegada.length; i++) {
+			Coche aux = new Coche();
+			for (int j=1; j<vOrdenLlegada.length; j++) {
+				if (vOrdenLlegada[j]!=null && vOrdenLlegada[j].getTiempo() < vOrdenLlegada[j-1].getTiempo()) {
+					aux = vOrdenLlegada[j-1];
+					vOrdenLlegada[j-1] = vOrdenLlegada[j];
+					vOrdenLlegada[j] = aux;
+					vOrdenLlegada[i].setPosicionFinal(i+1);
+				}
+			}
+		}
 
-		for (int m = 0; m < vPosiciones.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
+		for (int m = primeraPosicionvOrdenLlegada; m < vPosiciones.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
 			exch = 0;
 			for (int i = 0; i < vAux.length; i++) { // BUSCA LA MAYOR DISTANCIA RECORRIDA
 				if (vAux[i] != null && (vAux[i].getKms() > exch)) {
@@ -548,10 +574,11 @@ public class Carrera {
 
 				} else {
 					if (coche.isTerminado()) {
-						rankingString = "✔";
+						rankingString = coche.getPosicionFinal() + "º";
+//						rankingString = "✔ ";
 					} else {
 						if (coche.isAccidentado()) {
-							rankingString = "⚠";
+							rankingString = "⚠ ";
 						} else {
 							rankingString = "--";
 						}
@@ -825,9 +852,12 @@ public class Carrera {
 		Coche cocheAux = null;
 
 		for (int m = 0; m < vOrdenLlegada.length; m++) {
+			if (vOrdenLlegada[m] != null) {
+				vOrdenLlegada[m].setPosicionFinal(m+1);
+			}
 			for (int i = 1; i < vOrdenLlegada.length; i++) {
 				if (vOrdenLlegada[i] != null
-						&& vOrdenLlegada[i].getPosicionFinal() == vOrdenLlegada[i - 1].getPosicionFinal()) {
+						&& vOrdenLlegada[i].getTurnoLlegada() == vOrdenLlegada[i - 1].getTurnoLlegada()) {
 					if (vOrdenLlegada[i].getTiempo() < vOrdenLlegada[i - 1].getTiempo()) {
 						cocheAux = vOrdenLlegada[i];
 						vOrdenLlegada[i] = vOrdenLlegada[i - 1];
@@ -838,8 +868,11 @@ public class Carrera {
 		}
 
 		for (int i = 0; i < vOrdenLlegada.length; i++) {
-			if (vOrdenLlegada[i] != null)
-				vOrdenLlegada[i].setPosicionFinal(i + 1);
+			if (vOrdenLlegada[i] != null) {
+				vOrdenLlegada[i].setTurnoLlegada(i + 1);
+//				vOrdenLlegada[i].setPosicionFinal(i+1);
+			}
+				
 		}
 	}
 

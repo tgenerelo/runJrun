@@ -16,7 +16,7 @@ public class Coche {
 	private int velocidad;
 	private int velocidadMedia;
 	private int posicion;
-	private int posicionFinal;
+	private int turnoLlegada;
 	private float kms;
 	private float tiempo;
 	private boolean enMarcha;
@@ -38,7 +38,7 @@ public class Coche {
 		this.velocidad = 0;
 		this.velocidadMedia = 0;
 		this.posicion = 0;
-		this.posicionFinal = 0;
+		this.turnoLlegada = 0;
 		this.kms = 0;
 		this.tiempo = 0;
 		this.enMarcha = false;
@@ -63,7 +63,7 @@ public class Coche {
 		this.velocidad = 0;
 		this.velocidadMedia = 0;
 		this.posicion = 0;
-		this.posicionFinal = 0;
+		this.turnoLlegada = 0;
 		this.kms = 0;
 		this.tiempo = 0;
 		this.enMarcha = false;
@@ -251,11 +251,11 @@ public class Coche {
 	}
 
 	public int getPosicionFinal() {
-		return posicionFinal;
+		return turnoLlegada;
 	}
 
 	public void setPosicionFinal(int posicion) {
-		this.posicionFinal = posicion;
+		this.turnoLlegada = posicion;
 	}
 
 	public void setPosicion(int posicion) {
@@ -282,12 +282,20 @@ public class Coche {
 		this.tiempo = tiempo;
 	}
 
+	public int getTurnoLlegada() {
+		return turnoLlegada;
+	}
+
+	public void setTurnoLlegada(int turnoLlegada) {
+		this.turnoLlegada = turnoLlegada;
+	}
+
 	// toString
 	@Override
 	public String toString() {
 		return "Coche " + dorsal + ": " + piloto + " | " + velocidad + " km/h | " + String.format("%.3f", kms)
 				+ " km | En Marcha: " + enMarcha + " | Accidentado: " + accidentado + " | Terminado: " + terminado
-				+ " | " + posicionFinal + " | " + posicion + " | " + tiempo + " segundos";
+				+ " | " + turnoLlegada + " | " + posicion + " | " + tiempo + " segundos";
 	}
 
 }
