@@ -19,182 +19,6 @@ public class Menu {
 	static Carrera carrera = new Carrera("", 5, 9);
 	static Coche coche = new Coche("", true, "-?!#");
 
-	private static int ANCHOTOTAL = Main.ANCHOTOTAL;
-
-	/**
-	 * Genera el menú principal del programa.
-	 */
-	public static void menuPrincipal() {
-		String titulo = "Menú principal";
-		String vOpciones[] = { "Carrera rápida (1 jugador)", "Carrera rápida (2 jugadores)", "Configurar carrera", "Ajustes", "Acerca de runJrun", "Salir" };
-		int userInput = 0;
-		carrera = new Carrera("", 5, 9);
-		coche = new Coche("", true, "-?!#");
-
-		userInput = genMenu(titulo, vOpciones);
-
-		switch (userInput) {
-		case 1:
-			carrera.agregarCoche(new Coche("JUGADOR", true, "01"));
-			carrera.comenzar();
-			menuPrincipal();
-		case 2:
-			carrera.agregarCoche(new Coche("", true, "01"));
-			carrera.agregarCoche(new Coche("", true, "02"));
-			carrera.comenzar();
-			menuPrincipal();
-		case 3:
-			nuevaCarrera();
-			break;
-		case 4:
-			menuConfig();
-			break;
-		case 5:
-			about();
-			menuPrincipal();
-			break;
-		case 6:
-			String mensaje = "Gracias por jugar a runJrun. El programa se cerrará.";
-			System.out.println();
-			for (int i = 0; i < (ANCHOTOTAL - mensaje.length()) / 2; i++) {
-				System.out.print(" ");
-			}
-			System.out.println(mensaje);
-			
-			Main.salir();
-			break;
-		}
-	}
-
-	/**
-	 * Genera el menú para configurar una nueva carrera.
-	 */
-	public static void nuevaCarrera() {
-		String titulo = "Nueva carrera";
-		String vOpciones[] = { "Añadir jugador", "Nombre de la carrera", "Número de participantes",
-				"Distancia de la carrera", "Patrocinador de la carrera", "Comenzar carrera", "Cancelar" };
-		int userInput = 0;
-
-		userInput = genMenu(titulo, vOpciones);
-
-		switch (userInput) {
-		case 1:
-			nuevoJugador();
-			break;
-		case 2:
-			carrera.setNombre(String.valueOf(
-					genMenuAjuste(vOpciones[1], new String[] { "El nombre que recibirá la carrera.", }, "un nombre")));
-			break;
-		case 3:
-			carrera.setNumCompetidores(genMenuAjuste(vOpciones[2],
-					new String[] { "El número de coches que competirán en la carrera.",
-							"Si el número total es mayor que el número de",
-							"coches controlados por el jugador, se rellenarán",
-							"los sitios libres automáticamente con competidores", "controlados por la máquina.", "  ",
-							"Mínimo: 1, máximo: 200." },
-					1, 200));
-			break;
-		case 4:
-			carrera.setLongitud(
-					genMenuAjuste(vOpciones[3], new String[] { "La longitud en kilómetros que tendrá la carrera.", "  ",
-							"Mínimo: 0.1 km., Máximo: 300 km. Valor por defecto: 5 km" }, 0.1f, 300f));
-
-			break;
-		case 5:
-			carrera.setPatrocinador(genMenuAjuste(vOpciones[4],
-					new String[] { "La empresa o marca que patrocina la carrera." }, "un patrocinador"));
-			break;
-		case 6:
-			carrera.comenzar();
-			carrera = new Carrera("", 5, 9);
-
-			menuPrincipal();
-		case 7:
-			menuPrincipal();
-		}
-
-		nuevaCarrera();
-
-	}
-
-	/**
-	 * Genera el menú para la configuración del programa.
-	 */
-	private static void menuConfig() {
-		String titulo = "Configuración del juego";
-		String vOpciones[] = { "Configurar ancho del programa", "Cambiar la escala de tiempo",
-				"Cambiar la potencia del coche", "Volver al menú" };
-		int userInput = 0;
-
-		userInput = genMenu(titulo, vOpciones);
-
-		switch (userInput) {
-		case 1:
-			Main.ANCHOTOTAL = genMenuAjuste(vOpciones[0],
-					new String[] { "El ancho máximo que tendrá la ventana de juego.", "  ",
-							"Mínimo: 80, máximo: 400. Valor por defecto: 120." },
-					80, 400);
-			ANCHOTOTAL = Main.ANCHOTOTAL;
-			break;
-		case 2:
-			Main.SEGUNDOSTURNO = genMenuAjuste(vOpciones[1],
-					new String[] { "La duración en segundos de cada turno de juego.", "  ",
-							"Mínimo: 5, máximo: 30. Valor por defecto: 10.", },
-					5, 30);
-			break;
-		case 3:
-			Main.POTENCIA = genMenuAjuste(vOpciones[2],
-					new String[] { "La potencia que tendrán todos los coches del juego.",
-							"Ten en cuenta que la distancia recorrida se calcula",
-							"aleatoriamente en base a la potencia del motor, por",
-							"lo que una mayor potencia implica una mayor",
-							"probabilidad de accidente a altas velocidades.", " ",
-							"Mínimo: 20, máximo: 80. Valor por defecto: 50" },
-					20, 80);
-			break;
-		case 4:
-			menuPrincipal();
-			break;
-		}
-		menuConfig();
-	}
-
-	/**
-	 * Genera el menú para añadir un nuevo jugador a la partida.
-	 */
-	private static void nuevoJugador() {
-		String titulo = "Añadir un jugador";
-		String vOpciones[] = { "Nombre del jugador", "Número de dorsal", "Guardar", "Cancelar" };
-		int userInput = 0;
-
-		userInput = genMenu(titulo, vOpciones);
-
-		switch (userInput) {
-		case 1:
-			coche.setPiloto(genMenuAjuste(("Nombre del jugador"),
-					new String[] {
-							("Nombre del piloto controlado por el JUGADOR " + (carrera.getNumJugadores() + 1) + ".") },
-					"un nombre"));
-			break;
-		case 2:
-			coche.setDorsal(genMenuAjuste(("Número de dorsal"),
-					new String[] { ("Número de dorsal para el JUGADOR " + (carrera.getNumJugadores() + 1) + "."),
-							"Se recomienda un máximo de 2 caracteres alfanuméricos",
-							"(p. ej.: \"45\", \"AB\", \"4P\")" },
-					"un código de dorsal"));
-			break;
-		case 3:
-			carrera.agregarCoche(coche);
-			coche = new Coche("", true, "-?!#");
-			nuevaCarrera();
-			break;
-		case 4:
-			nuevaCarrera();
-			break;
-		}
-		nuevoJugador();
-	}
-
 	/**
 	 * Genera un menú a partir de un título y un vector con sus posibles opciones,
 	 * consulta al usuario y devuelve la opción escogida por este.
@@ -203,7 +27,7 @@ public class Menu {
 	 * @param vOpciones Un vector con todas las opciones del menú.
 	 * @return Devuelve la opción escogida por el usuario.
 	 */
-	private static int genMenu(String titulo, String vOpciones[]) {
+	static int genMenu(String titulo, String vOpciones[]) {
 		String mensError = "Opción no válida. Vuelve a intentarlo.";
 		int userInput = 0;
 
@@ -212,7 +36,7 @@ public class Menu {
 			pintarMenu(titulo, vOpciones);
 
 			if (userInput == -1) {
-				for (int i = 0; i < (ANCHOTOTAL - mensError.length()) / 2; i++) {
+				for (int i = 0; i < (Main.ANCHOTOTAL - mensError.length()) / 2; i++) {
 					System.out.print(" ");
 				}
 				System.out.println(mensError);
@@ -234,7 +58,7 @@ public class Menu {
 	 * @param valorMax     El valor máximo que puede tener el ajuste.
 	 * @return Devuelve el valor establecido por el usuario.
 	 */
-	private static int genMenuAjuste(String titulo, String vDescripcion[], int valorMin, int valorMax) {
+	static int genMenuAjuste(String titulo, String vDescripcion[], int valorMin, int valorMax) {
 		String mensError = "Opción no válida. Vuelve a intentarlo.";
 		int userInput = 0;
 
@@ -243,7 +67,7 @@ public class Menu {
 			pintarMenuAjuste(titulo, vDescripcion);
 
 			if (userInput == -1) {
-				for (int i = 0; i < (ANCHOTOTAL - mensError.length()) / 2; i++) {
+				for (int i = 0; i < (Main.ANCHOTOTAL - mensError.length()) / 2; i++) {
 					System.out.print(" ");
 				}
 				System.out.println(mensError);
@@ -266,7 +90,7 @@ public class Menu {
 	 * @param valorMax     El valor máximo que puede tener el ajuste.
 	 * @return Devuelve el valor establecido por el usuario.
 	 */
-	private static float genMenuAjuste(String titulo, String vDescripcion[], float valorMin, float valorMax) {
+	static float genMenuAjuste(String titulo, String vDescripcion[], float valorMin, float valorMax) {
 		String mensError = "Opción no válida. Vuelve a intentarlo.";
 		float userInput = 0;
 
@@ -275,7 +99,7 @@ public class Menu {
 			pintarMenuAjuste(titulo, vDescripcion);
 
 			if (userInput == -1) {
-				for (int i = 0; i < (ANCHOTOTAL - mensError.length()) / 2; i++) {
+				for (int i = 0; i < (Main.ANCHOTOTAL - mensError.length()) / 2; i++) {
 					System.out.print(" ");
 				}
 				System.out.println(mensError);
@@ -301,7 +125,7 @@ public class Menu {
 	 *                              que se espera del usuario.
 	 * @return Devuelve el valor establecido por el usuario.
 	 */
-	private static String genMenuAjuste(String titulo, String vDescripcion[], String tipoDeDatoAIntroducir) {
+	static String genMenuAjuste(String titulo, String vDescripcion[], String tipoDeDatoAIntroducir) {
 		String mensError = "Nombre no válido. Vuelve a intentarlo.";
 		String userInput = "";
 
@@ -310,7 +134,7 @@ public class Menu {
 			pintarMenuAjuste(titulo, vDescripcion);
 
 			if (userInput == ".!#$?") {
-				for (int i = 0; i < (ANCHOTOTAL - mensError.length()) / 2; i++) {
+				for (int i = 0; i < (Main.ANCHOTOTAL - mensError.length()) / 2; i++) {
 					System.out.print(" ");
 				}
 				System.out.println(mensError);
@@ -332,7 +156,7 @@ public class Menu {
 
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		// PRIMERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("╔");
@@ -344,23 +168,23 @@ public class Menu {
 		System.out.println("╗");
 
 		// SEGUNDA LÍNEA (contenido)
-		for (int i = 0; i < ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("║ " + titulo.toUpperCase() + " ║");
-		if ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) % 2 == 0) {
-			for (int i = 0; i < ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2) - 1; i++) {
+		if ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) % 2 == 0) {
+			for (int i = 0; i < ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2) - 1; i++) {
 				System.out.print(" ");
 			}
 		} else {
-			for (int i = 0; i < ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
+			for (int i = 0; i < ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
 				System.out.print(" ");
 			}
 		}
 		System.out.println();
 
 		// TERCERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (titulo.length() + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("╚");
@@ -387,7 +211,7 @@ public class Menu {
 		pintarTitulo(titulo);
 
 		// PRIMERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("┌");
@@ -400,7 +224,7 @@ public class Menu {
 
 		// SEGUNDA LÍNEA (contenido)
 		for (int j = 0; j < vOpciones.length; j++) {
-			for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+			for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 				System.out.print(" ");
 			}
 			System.out.print("│ " + (j + 1) + ". " + vOpciones[j].toUpperCase());
@@ -414,7 +238,7 @@ public class Menu {
 		}
 
 		// TERCERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("└");
@@ -443,7 +267,7 @@ public class Menu {
 		pintarTitulo(titulo);
 
 		// PRIMERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("┌");
@@ -456,7 +280,7 @@ public class Menu {
 
 		// SEGUNDA LÍNEA (contenido)
 		for (int j = 0; j < vDescripcion.length; j++) {
-			for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+			for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 				System.out.print(" ");
 			}
 			System.out.print("│");
@@ -475,7 +299,7 @@ public class Menu {
 		}
 
 		// TERCERA LÍNEA (borde)
-		for (int i = 0; i < ((ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoOpciones + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("└");
@@ -500,7 +324,7 @@ public class Menu {
 		String texto = "Introduce una opción: > ";
 		leer = new Scanner(System.in);
 
-		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
+		for (int i = 0; i < (Main.ANCHOTOTAL - texto.length()) / 2; i++) {
 			System.out.print(" ");
 		}
 		System.out.print(texto);
@@ -539,7 +363,7 @@ public class Menu {
 			texto = "Introduce un valor: > ";
 		}
 
-		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
+		for (int i = 0; i < (Main.ANCHOTOTAL - texto.length()) / 2; i++) {
 			System.out.print(" ");
 		}
 		System.out.print(texto);
@@ -572,7 +396,7 @@ public class Menu {
 		String texto = "Introduce un valor: > ";
 		leer = new Scanner(System.in);
 
-		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
+		for (int i = 0; i < (Main.ANCHOTOTAL - texto.length()) / 2; i++) {
 			System.out.print(" ");
 		}
 		System.out.print(texto);
@@ -609,7 +433,7 @@ public class Menu {
 		String texto = "Introduce " + nombreNombre + ": > ";
 		leer = new Scanner(System.in);
 
-		for (int i = 0; i < (ANCHOTOTAL - texto.length()) / 2; i++) {
+		for (int i = 0; i < (Main.ANCHOTOTAL - texto.length()) / 2; i++) {
 			System.out.print(" ");
 		}
 		System.out.print(texto);
@@ -649,7 +473,7 @@ public class Menu {
 	/**
 	 * Genera una pantalla de información sobre el programa.
 	 */
-	private static void about() {
+	static void about() {
 		genMenuAjuste("Acerca de runJrun",
 				new String[] { "runJrun es un juego de carreras por turnos. En cada turno el jugador",
 						"activo puede arrancar, acelerar o frenar en función del estado de su",

@@ -25,9 +25,6 @@ public class Coche {
 	private boolean jugador;
 	private int numJugador;
 
-	private final int POTENCIA = Main.POTENCIA;
-	private final int SEGUNDOSTURNO = Main.SEGUNDOSTURNO;
-
 	/**
 	 * Genera automáticamente todos los datos de inicio del coche, incluyendo un
 	 * nombre del piloto y su dorsal al azar.
@@ -136,7 +133,7 @@ public class Coche {
 		Random r = new Random();
 
 		if (!accidentado && isEnMarcha()) {
-			velocidad += r.nextInt(POTENCIA);
+			velocidad += r.nextInt(Main.POTENCIA);
 
 			// El cálculo del avance se realiza mediante la siguiente fórmula:
 			// ((Conversión a m/s) * segundos que dura cada turno / conversión a km)
@@ -163,7 +160,7 @@ public class Coche {
 	public void frenar() {
 		Random r = new Random();
 
-		velocidad -= r.nextInt(POTENCIA);
+		velocidad -= r.nextInt(Main.POTENCIA);
 
 		if (velocidad < 0) {
 			velocidad = 0;
