@@ -87,7 +87,8 @@ public class Coche {
 				"Dominika", "Dominic", "Dominique", "Amanda", "Zachery", "Wendy", "Livia", "Zunaira", "Jannat", "Ayra",
 				"Anya", "Liara", "Katia", "Katja", "Tristan", "Billy", "Billie", "Kaitlin", "Grant", "Stan", "Stanley",
 				"Mohamed", "Mohammed", "Lynne", "Camila", "Usnavi", "Miranda", "Rod", "Todd", "David", "Félix", "Felix",
-				"Carmen", "Hector", "Héctor", "Gustavo", "Gustave", "Kermit", "Jeb", "Bob", "Bill" };
+				"Carmen", "Hector", "Héctor", "Gustavo", "Gustave", "Kermit", "Jeb", "Bob", "Bill", "Kirk", "J.J.",
+				"J.C.", "C.J.", "Bobby", "Bobbie", "Archibald", "Archibaldo", "Bernardo" };
 		String vApellidos[] = { "Bamberger", "Cleaver", "Centers", "Painter", "Snyder", "Podunk", "Falchuck",
 				"Shackleford", "Hominy", "Chalk", "Chandler", "Pugh", "Prangburn", "Wheeler", "Cleveland", "Suggs",
 				"Grainger", "Howells", "Fischer", "Fisher", "Parra", "Kline", "McGregor", "Whitmore", "Whitemore",
@@ -97,8 +98,9 @@ public class Coche {
 				"Chee", "Buxton", "Hayden", "French", "Maxwell", "Glover", "Blair", "Lynn", "Hussain", "Hussein",
 				"Kumar", "Driscoll", "Dyer", "Wall", "Massey", "Hulme", "Walker", "Brookes", "Brooke", "McNally",
 				"Palacios", "Heaton", "Peel", "Penn", "Rollins", "McDonald", "Farley", "Flynn", "Wilkes", "Booth",
-				"Booher", "Booker", "Waits", "Watts", "Hanks", "Miranda", "Jackson", "Johnson", "Berry", "Kerman" };
-
+				"Booher", "Booker", "Waits", "Watts", "Hanks", "Miranda", "Jackson", "Johnson", "Berry", "Kerman",
+				"Draper", "Acevedo", "Russell", "Abrams", "McGee", "McGuffin", "Hitchcock", "Tate", "Bertolucci",
+				"Da Silva", "Larson", "Larsson", "Black", "White", "Fernández", "Hernández", "Haddock" };
 		return vNombres[r.nextInt(vNombres.length)] + " " + vApellidos[r.nextInt(vApellidos.length)];
 	}
 
@@ -177,7 +179,7 @@ public class Coche {
 		velocidad = 0;
 		accidentado = true;
 	}
-	
+
 	// GETTERS / SETTERS
 	public int getNumJugador() {
 		return numJugador;
