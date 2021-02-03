@@ -296,9 +296,11 @@ public class Carrera {
 			}
 		}
 
-		if (nombre.equals("")) {
+		if (nombre.equals(""))
 			generarNombreGP();
-		}
+		
+		if (patrocinador.equals(""))
+			patrocinador = generarPatrocinador();
 
 	}
 
@@ -314,6 +316,8 @@ public class Carrera {
 		String opc1 = "1 Arrancar";
 		String opc2 = "2 Acelerar";
 		String opc3 = "3 Frenar";
+		
+		posicionCoches();
 
 		if (jugador.isEnMarcha() || vOrdenLlegada[0] == null) {
 			do {
@@ -410,7 +414,7 @@ public class Carrera {
 					coche.arrancar();
 			}
 		}
-
+		
 		posicionCoches();
 
 	}

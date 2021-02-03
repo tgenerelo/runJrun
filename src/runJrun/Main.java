@@ -113,8 +113,8 @@ public class Main {
 										"Si el número total es mayor que el número de",
 										"coches controlados por el jugador, se rellenarán",
 										"los sitios libres automáticamente con competidores",
-										"controlados por la máquina.", "  ", "Mínimo: 1, máximo: 200." },
-								1, 200));
+										"controlados por la máquina.", "  ", "Mínimo: 1, máximo: 100." },
+								1, 100));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: LONGITUD DE LA CARRERA

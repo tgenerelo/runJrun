@@ -88,7 +88,10 @@ public class Coche {
 				"Anya", "Liara", "Katia", "Katja", "Tristan", "Billy", "Billie", "Kaitlin", "Grant", "Stan", "Stanley",
 				"Mohamed", "Mohammed", "Lynne", "Camila", "Usnavi", "Miranda", "Rod", "Todd", "David", "Félix", "Felix",
 				"Carmen", "Hector", "Héctor", "Gustavo", "Gustave", "Kermit", "Jeb", "Bob", "Bill", "Kirk", "J.J.",
-				"J.C.", "C.J.", "Bobby", "Bobbie", "Archibald", "Archibaldo", "Bernardo" };
+				"J.C.", "C.J.", "Bobby", "Bobbie", "Archibald", "Archibaldo", "Bernardo", "Adam", "Ahmed", "Ryan",
+				"Rian", "Uma", "Charlize", "Precious", "Woody", "Edwin", "Eugene", "Neil", "Steve", "Steven", "Esteban",
+				"Peter", "Pedro", "Paula", "Tomás", "Thomas", "Tom", "Tomasz", "Naomi", "Elizabeth", "Beth", "Elisa",
+				"Elizah", "Aaron", "Theo", "Alexander", "George", "Jorge", "Jurgen", "Sterling" };
 		String vApellidos[] = { "Bamberger", "Cleaver", "Centers", "Painter", "Snyder", "Podunk", "Falchuck",
 				"Shackleford", "Hominy", "Chalk", "Chandler", "Pugh", "Prangburn", "Wheeler", "Cleveland", "Suggs",
 				"Grainger", "Howells", "Fischer", "Fisher", "Parra", "Kline", "McGregor", "Whitmore", "Whitemore",
@@ -100,7 +103,9 @@ public class Coche {
 				"Palacios", "Heaton", "Peel", "Penn", "Rollins", "McDonald", "Farley", "Flynn", "Wilkes", "Booth",
 				"Booher", "Booker", "Waits", "Watts", "Hanks", "Miranda", "Jackson", "Johnson", "Berry", "Kerman",
 				"Draper", "Acevedo", "Russell", "Abrams", "McGee", "McGuffin", "Hitchcock", "Tate", "Bertolucci",
-				"Da Silva", "Larson", "Larsson", "Black", "White", "Fernández", "Hernández", "Haddock" };
+				"Da Silva", "Larson", "Larsson", "Black", "White", "Fernández", "Hernández", "Haddock", "Adams",
+				"Harrelson", "Aldrin", "Armstrong", "McQueen", "Queen", "Quinn", "Quill", "Watts", "Winslet", "Harmon",
+				"Burr", "Hamilton", "Figgis", "Archer", "von Hammersmark" };
 		return vNombres[r.nextInt(vNombres.length)] + " " + vApellidos[r.nextInt(vApellidos.length)];
 	}
 
