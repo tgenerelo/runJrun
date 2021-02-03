@@ -474,7 +474,7 @@ public class Menu {
 	 * Genera una pantalla de información sobre el programa.
 	 */
 	static void about() {
-		genMenuAjuste("Acerca de runJrun",
+		genMenuAjuste(("Acerca de runJrun" + " " + Main.version),
 				new String[] { "runJrun es un juego de carreras por turnos. En cada turno el jugador",
 						"activo puede arrancar, acelerar o frenar en función del estado de su",
 						"coche. Cada vez que el coche acelera o frena, se genera un número",

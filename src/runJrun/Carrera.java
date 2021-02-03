@@ -46,7 +46,7 @@ public class Carrera {
 		this.vCoches = new Coche[numCompetidores];
 		this.vOrdenLlegada = new Coche[numCompetidores];
 		this.vPosiciones = new Coche[numCompetidores];
-		this.numTurno = 0;
+		this.numTurno = -1;
 		this.numJugadores = 0;
 	}
 
@@ -202,8 +202,11 @@ public class Carrera {
 			for (int j = 0; j < vCoches.length; j++) {
 				if (vCoches[j] != null && vCoches[j].getNumJugador() == i) {
 					turnoJugador(vCoches[j]);
-					vCoches[j]
-							.setVelocidadMedia((vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
+					if (numTurno > 0) {
+						vCoches[j].setVelocidadMedia(
+								(vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
+					}
+
 				}
 			}
 		}
@@ -212,7 +215,10 @@ public class Carrera {
 			if (coche != null) {
 				if (!coche.isJugador()) {
 					turnoNpcs(coche);
-					coche.setVelocidadMedia((coche.getVelocidadMedia() + coche.getVelocidad()) / numTurno);
+					if (numTurno > 0) {
+						coche.setVelocidadMedia((coche.getVelocidadMedia() + coche.getVelocidad()) / numTurno);
+					}
+
 				}
 			}
 		}
@@ -298,7 +304,7 @@ public class Carrera {
 
 		if (nombre.equals(""))
 			generarNombreGP();
-		
+
 		if (patrocinador.equals(""))
 			patrocinador = generarPatrocinador();
 
@@ -316,7 +322,7 @@ public class Carrera {
 		String opc1 = "1 Arrancar";
 		String opc2 = "2 Acelerar";
 		String opc3 = "3 Frenar";
-		
+
 		posicionCoches();
 
 		if (jugador.isEnMarcha() || vOrdenLlegada[0] == null) {
@@ -414,7 +420,7 @@ public class Carrera {
 					coche.arrancar();
 			}
 		}
-		
+
 		posicionCoches();
 
 	}
@@ -518,8 +524,6 @@ public class Carrera {
 			if (coche != null) {
 				distanciaRecorrida = (int) (coche.getKms() / unidadAvance);
 				distanciaRestante = (int) (Main.anchoPista - (coche.getKms() / unidadAvance));
-				if (Main.anchoPista > (distanciaRecorrida + distanciaRestante))
-					distanciaRestante++;
 
 				if (coche != null)
 					if (coche.isAccidentado()) {
@@ -533,9 +537,17 @@ public class Carrera {
 					}
 
 				System.out.print("║");
-				if (coche.getKms() >= longitud) {
-					distanciaRecorrida = Main.anchoPista;
+
+				if (distanciaRestante < 0) {
 					distanciaRestante = 0;
+					distanciaRecorrida = Main.anchoPista;
+				}
+
+				if (Main.anchoPista > (distanciaRecorrida + distanciaRestante))
+					distanciaRestante++;
+
+				if (distanciaRecorrida > Main.anchoPista) {
+					distanciaRecorrida = Main.anchoPista;
 				}
 
 				// Controla la representación de la distancia recorrida, ajustando manualmente
@@ -893,12 +905,30 @@ public class Carrera {
 
 		String titulo = "CLASIFICACIÓN FINAL";
 		int anchoNombres = anchoNombres(vOrdenLlegada);
-		int anchoTiempo = 19;
+		int anchoTiempo = 11;
 		int anchoRanking = 0;
+		int anchoDorsales = 0;
+		int anchoSeparadores = 13;
 
 		for (Coche coche : vOrdenLlegada) {
 			if (coche != null && String.valueOf(coche.getPosicion()).length() + 1 > anchoRanking) {
 				anchoRanking = (String.valueOf(coche.getPosicion()).length() + 1);
+			}
+			if (coche != null && String.valueOf(coche.getDorsal()).length() > anchoDorsales) {
+				anchoDorsales = coche.getDorsal().length();
+			}
+		}
+
+		for (int i = vOrdenLlegada.length - 1; i > 0; i--) {
+			if (vOrdenLlegada[i] != null) {
+				if (vOrdenLlegada[i].getTiempo() >= 3600f) {
+					anchoTiempo = 11;
+					break;
+				} else {
+					anchoTiempo = 9;
+					break;
+
+				}
 			}
 		}
 
@@ -913,36 +943,128 @@ public class Carrera {
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
 		// CABECERA (BORDE SUPERIOR)
-		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 10)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
-		System.out.print("┌");
+		System.out.print("╔");
 
-		for (int i = 0; i < (anchoRanking + anchoNombres + anchoTiempo + 8); i++) {
-			System.out.print("─");
+		for (int i = 0; i < (anchoRanking + anchoNombres + anchoDorsales + anchoTiempo + anchoSeparadores - 2); i++) {
+			System.out.print("═");
 		}
 
-		System.out.println("┐");
+		System.out.println("╗");
 
 		// CABECERA (TÍTULO)
-		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 10)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
-		System.out.print("│");
-		for (int i = 0; i < (((anchoRanking + anchoNombres + anchoTiempo + 8) - titulo.length()) / 2); i++) {
+		System.out.print("║");
+
+		if ((anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores) % 2 == 0
+				&& titulo.length() % 2 != 0) {
+			titulo += " ";
+		}
+
+		for (int i = 0; i < (((anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores - 2)
+				- titulo.length()) / 2); i++) {
 			System.out.print(" ");
 		}
 
 		System.out.print(titulo);
 
-		for (int i = 0; i < (((anchoRanking + anchoNombres + anchoTiempo + 9) - titulo.length()) / 2); i++) {
+		for (int i = 0; i < (((anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores - 2)
+				- titulo.length()) / 2); i++) {
+			System.out.print(" ");
+		}
+
+		System.out.println("║");
+
+		// BORDE INFERIOR CABECERA
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
+			System.out.print(" ");
+		}
+		System.out.print("╚");
+
+		for (int i = 0; i < (anchoRanking + anchoNombres + anchoDorsales + anchoTiempo + anchoSeparadores - 2); i++) {
+			System.out.print("═");
+		}
+
+		System.out.println("╝");
+
+		// SEPARADOR TABLA
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
+			System.out.print(" ");
+		}
+		System.out.print("┌");
+		for (int i = 0; i < anchoRanking + 2; i++) {
+			System.out.print("─");
+		}
+
+		System.out.print("┬");
+
+		for (int i = 0; i < (anchoDorsales + anchoNombres + 5); i++) {
+			System.out.print("─");
+		}
+
+		System.out.print("┬");
+
+		for (int i = 0; i < (anchoTiempo + 2); i++) {
+			System.out.print("─");
+		}
+
+		System.out.println("┐");
+
+		// NOMBRES COLUMNAS
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
+			System.out.print(" ");
+		}
+		System.out.print("│");
+		for (int i = 0; i < anchoRanking + 2; i++) {
+			System.out.print(" ");
+		}
+
+		System.out.print("│");
+
+		String titCol = "Piloto";
+
+		if ((anchoDorsales + anchoNombres + 5) % 2 != 0 && titCol.length() % 2 == 0) {
+			titCol += " ";
+		}
+
+		for (int i = 0; i < ((anchoDorsales + anchoNombres + 5) - titCol.length()) / 2; i++) {
+			System.out.print(" ");
+		}
+		System.out.print(titCol);
+		for (int i = 0; i < ((anchoDorsales + anchoNombres + 5) - titCol.length()) / 2; i++) {
+			System.out.print(" ");
+		}
+
+		System.out.print("│");
+
+		titCol = "Tiempo";
+
+		if ((anchoTiempo + 2) % 2 != 0 && titCol.length() % 2 == 0) {
+			titCol += " ";
+		}
+
+		for (int i = 0; i < ((anchoTiempo + 2) - titCol.length()) / 2; i++) {
+			System.out.print(" ");
+		}
+		System.out.print(titCol);
+		for (int i = 0; i < ((anchoTiempo + 2) - titCol.length()) / 2; i++) {
 			System.out.print(" ");
 		}
 
 		System.out.println("│");
 
 		// SEPARADOR TABLA
-		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 10)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("├");
@@ -950,13 +1072,13 @@ public class Carrera {
 			System.out.print("─");
 		}
 
-		System.out.print("┬");
+		System.out.print("┼");
 
-		for (int i = 0; i < (anchoNombres + 2); i++) {
+		for (int i = 0; i < (anchoDorsales + anchoNombres + 5); i++) {
 			System.out.print("─");
 		}
 
-		System.out.print("┬");
+		System.out.print("┼");
 
 		for (int i = 0; i < (anchoTiempo + 2); i++) {
 			System.out.print("─");
@@ -997,12 +1119,20 @@ public class Carrera {
 				String rankingString = String.valueOf(coche.getPosicionFinal() + "º");
 
 				if (coche.getTiempo() < 3600) {
-					tiempoString = "Tiempo: " + minutos + ":" + segundos;
+					tiempoString = minutos + ":" + segundos;
+					while (anchoTiempo > (tiempoString.length())) {
+						tiempoString = " " + tiempoString;
+					}
 				} else {
-					tiempoString = "Tiempo: " + horas + ":" + minutos + ":" + segundos;
+					tiempoString = horas + ":" + minutos + ":" + segundos;
 				}
 
-				for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 10)) / 2); i++) {
+				while (coche.getDorsal().length() < anchoDorsales) {
+					coche.setDorsal(" " + coche.getDorsal());
+				}
+
+				for (int i = 0; i < ((Main.ANCHOTOTAL
+						- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
 					System.out.print(" ");
 				}
 
@@ -1010,23 +1140,21 @@ public class Carrera {
 					rankingString = " " + rankingString;
 				}
 
-				System.out.print("│ " + rankingString + " │ " + coche.getPiloto());
+				System.out
+						.print("│ " + rankingString + " │ " + "[" + coche.getDorsal() + "]" + " " + coche.getPiloto());
 
 				for (int i = 0; i < anchoNombres - coche.getPiloto().length(); i++) {
 					System.out.print(" ");
 				}
 				System.out.print(" │ " + tiempoString);
 
-				for (int i = 0; i < (anchoTiempo - (tiempoString.length())); i++) {
-					System.out.print(" ");
-				}
-
 				System.out.println(" │");
 			}
 		}
 
 		// TERCERA LÍNEA (BORDE INFERIOR)
-		for (int i = 0; i < ((Main.ANCHOTOTAL - (anchoRanking + anchoNombres + anchoTiempo + 10)) / 2); i++) {
+		for (int i = 0; i < ((Main.ANCHOTOTAL
+				- (anchoRanking + anchoDorsales + anchoNombres + anchoTiempo + anchoSeparadores)) / 2); i++) {
 			System.out.print(" ");
 		}
 		System.out.print("└");
@@ -1036,7 +1164,7 @@ public class Carrera {
 
 		System.out.print("┴");
 
-		for (int i = 0; i < (anchoNombres + 2); i++) {
+		for (int i = 0; i < (anchoDorsales + anchoNombres + 5); i++) {
 			System.out.print("─");
 		}
 
