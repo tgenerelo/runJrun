@@ -1,5 +1,9 @@
 package runJrun;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.InputMismatchException;
@@ -22,7 +26,6 @@ public class Carrera {
 	private int numCompetidores;
 	private Coche vCoches[];
 	private Coche vOrdenLlegada[];
-	private Coche vPosiciones[];
 	private int numTurno;
 	private int numJugadores;
 
@@ -45,7 +48,6 @@ public class Carrera {
 		this.numCompetidores = numCompetidores;
 		this.vCoches = new Coche[numCompetidores];
 		this.vOrdenLlegada = new Coche[numCompetidores];
-		this.vPosiciones = new Coche[numCompetidores];
 		this.numTurno = -1;
 		this.numJugadores = 0;
 	}
@@ -189,60 +191,6 @@ public class Carrera {
 	}
 
 	/**
-	 * Controla cada turno de la carrera. Los jugadores humanos realizan sus
-	 * acciones en orden y luego se calcula el progreso de los coches controlados
-	 * por el programa. Al final del turno se calcula la posición de cada coche en
-	 * la carrera.
-	 */
-	public void turnoCarrera() {
-
-		numTurno++;
-
-		for (int i = 1; i <= numJugadores; i++) {
-			for (int j = 0; j < vCoches.length; j++) {
-				if (vCoches[j] != null && vCoches[j].getNumJugador() == i) {
-					turnoJugador(vCoches[j]);
-					if (numTurno > 0) {
-						vCoches[j].setVelocidadMedia(
-								(vCoches[j].getVelocidadMedia() + vCoches[j].getVelocidad()) / numTurno);
-					}
-
-				}
-			}
-		}
-
-		for (Coche coche : vCoches) {
-			if (coche != null) {
-				if (!coche.isJugador()) {
-					turnoNpcs(coche);
-					if (numTurno > 0) {
-						coche.setVelocidadMedia((coche.getVelocidadMedia() + coche.getVelocidad()) / numTurno);
-					}
-
-				}
-			}
-		}
-
-		for (Coche coche : vCoches) {
-			if (coche.isEnMarcha() && coche.getKms() >= longitud) {
-				coche.setTerminado(true);
-				coche.setMarcha(false);
-				calcularTiempo(coche);
-				coche.setTurnoLlegada(numTurno);
-				for (int i = 0; i < vOrdenLlegada.length; i++) {
-					if (vOrdenLlegada[i] == null) {
-						vOrdenLlegada[i] = coche;
-						break;
-					} else {
-						if (vOrdenLlegada[i].equals(coche))
-							break;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Comprueba que todos los ajustes de la carrera son válidos y controla el
 	 * progreso de la carrera hasta que esta termina.
 	 */
@@ -272,7 +220,6 @@ public class Carrera {
 			numCompetidores = numJugadores;
 
 		vParticipantes = new Coche[numCompetidores];
-		vPosiciones = new Coche[numCompetidores];
 		vOrdenLlegada = new Coche[numCompetidores];
 
 		// COLOCA LOS COCHES EN UN ORDEN AL AZAR EN vCoches
@@ -311,6 +258,106 @@ public class Carrera {
 	}
 
 	/**
+	 * Controla cada turno de la carrera. Los jugadores humanos realizan sus
+	 * acciones en orden y luego se calcula el progreso de los coches controlados
+	 * por el programa. Al final del turno se calcula la posición de cada coche en
+	 * la carrera.
+	 */
+	public void turnoCarrera() {
+
+		numTurno++;
+		
+		for (int i = 1; i <= numJugadores; i++) {
+			for (int j = 0; j < vCoches.length; j++) {
+				if (vCoches[j] != null && vCoches[j].getNumJugador() == i) {
+					turnoJugador(vCoches[j]);
+				}
+			}
+		}
+
+		for (Coche coche : vCoches) {
+			if (coche != null) {
+				if (!coche.isJugador()) {
+					turnoNpcs(coche);
+				}
+			}
+		}
+
+		ordenarPosiciones();
+	}
+
+	private void ordenarPosiciones() {
+
+		int cochesOrdenados = 0;
+
+		for (int i = 0; i < vCoches.length; i++) {
+			if ((!vCoches[i].isTerminado()) && (vCoches[i].getKms() >= longitud)) {
+				vCoches[i].setTerminado(true);
+				for (int j = 0; j < vOrdenLlegada.length; j++) {
+					if (vOrdenLlegada[j] == null) {
+						vOrdenLlegada[j] = vCoches[i];
+						calcularTiempo(vOrdenLlegada[j]);
+						while ((j > 0) && (vCoches[i].getTiempo() < vOrdenLlegada[j - 1].getTiempo())) {
+							Coche aux = vOrdenLlegada[j - 1];
+							vOrdenLlegada[j - 1] = vCoches[i];
+							vOrdenLlegada[j] = aux;
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < vOrdenLlegada.length; i++) {
+			if (vOrdenLlegada[i] != null) {
+				vOrdenLlegada[i].setPosicionFinal(i + 1);
+				if ((i + 1) > cochesOrdenados) {
+					cochesOrdenados = (i + 1);
+				}
+			}
+		}
+
+		Coche vAux[] = vCoches.clone();
+		
+		for (int i = 0; i < vCoches.length; i++) {
+			if (vCoches[i] != null) {
+
+				Coche cocheActual = vCoches[i];
+
+				if (cocheActual.isTerminado()) {
+					cocheActual.setPosicion(cocheActual.getPosicionFinal());
+					vAux[cocheActual.getPosicion()-1] = cocheActual;
+				} else {
+					float numKms = 0;
+					Coche aux = null;
+
+					for (int j = 0; j < vAux.length; j++) {
+						if (vAux[j]!= null && !vAux[j].isTerminado() && (vAux[j].getKms() > numKms)) {
+							numKms = vAux[j].getKms();
+							aux = vAux[j];
+						}
+					}
+					
+					for (int j=0; j<vCoches.length; j++) {
+						if (vCoches[j]!=null && vCoches[j].equals(aux)) {
+							vCoches[j].setPosicion(cochesOrdenados+1);
+							cochesOrdenados++;
+							for (int m=0; m<vAux.length; m++) {
+								if (vAux[m] != null && vAux[m].equals(aux))
+									vAux[m]=null;
+							}
+						}
+					}
+					
+
+				}
+			}
+
+		}
+
+	}
+
+	/**
 	 * Controla el turno del jugador humano activo.
 	 * 
 	 * @param jugador El jugador activo. Su atributo "jugador" debería ser true.
@@ -323,7 +370,7 @@ public class Carrera {
 		String opc2 = "2 Acelerar";
 		String opc3 = "3 Frenar";
 
-		posicionCoches();
+		ordenarPosiciones();
 
 		if (jugador.isEnMarcha() || vOrdenLlegada[0] == null) {
 			do {
@@ -382,6 +429,7 @@ public class Carrera {
 			}
 
 			if (numJugadores > 1 && numTurno > 1) {
+				ordenarPosiciones();
 				pintarGraficos();
 				pintarSalpicadero(jugador);
 				System.out.println();
@@ -420,82 +468,6 @@ public class Carrera {
 					coche.arrancar();
 			}
 		}
-
-		posicionCoches();
-
-	}
-
-	/**
-	 * Cambia la posición del coche en la carrera, en función de la distancia que ha
-	 * recorrido y comparando con todos los demás coches que compiten.
-	 */
-	public void posicionCoches() {
-
-		Coche vAux[] = new Coche[vCoches.length];
-		float exch = 0f;
-		int posicion = 1;
-		vAux = vCoches.clone();
-		int primeraPosicionvOrdenLlegada = 0;
-
-		for (int i = 0; i < vOrdenLlegada.length; i++) {
-			if (vOrdenLlegada[i] == null) {
-				posicion = i + 1;
-				break;
-			}
-		}
-
-		for (int i = 0; i < vOrdenLlegada.length; i++) {
-			if (vOrdenLlegada[i] != null) {
-				vOrdenLlegada[i].setPosicionFinal(i + 1);
-			}
-		}
-
-		for (int i = 0; i < vOrdenLlegada.length; i++) {
-			Coche aux = new Coche();
-			for (int j = 1; j < vOrdenLlegada.length; j++) {
-				if (vOrdenLlegada[j] != null && vOrdenLlegada[j].getTiempo() < vOrdenLlegada[j - 1].getTiempo()) {
-					aux = vOrdenLlegada[j - 1];
-					vOrdenLlegada[j - 1] = vOrdenLlegada[j];
-					vOrdenLlegada[j] = aux;
-					vOrdenLlegada[i].setPosicionFinal(i + 1);
-				}
-			}
-		}
-
-		for (int m = primeraPosicionvOrdenLlegada; m < vPosiciones.length; m++) { // UNA VEZ POR CADA COCHE EN vAux
-			exch = 0;
-			for (int i = 0; i < vAux.length; i++) { // BUSCA LA MAYOR DISTANCIA RECORRIDA
-				if (vAux[i] != null && (vAux[i].getKms() > exch)) {
-					exch = vAux[i].getKms(); // ALMACENA LA MAYOR DISTANCIA RECORRIDA
-				}
-			}
-			for (int j = 0; j < vAux.length; j++) { // ENCUENTRA EL COCHE CON LA MAYOR DISTANCIA RECORRIDA QUE NO ESTÉ
-													// ACCIDENTADO
-				if (vAux[j] != null && vAux[j].getKms() == exch) {
-					vPosiciones[m] = vAux[j]; // ASIGNA EL COCHE EN EL PRIMER HUECO LIBRE DE vPosiciones
-					vAux[j] = null; // ELIMINA EL COCHE DE vAux PARA QUE NO LO VUELVA A ENCONTRAR
-					if (!vPosiciones[m].isTerminado() && !vPosiciones[m].isAccidentado()) {
-						vPosiciones[m].setPosicion(posicion);
-						posicion++;
-					} else {
-						vPosiciones[m].setPosicion(0);
-					}
-
-					break;
-				}
-			}
-
-			for (int i = 0; i < vPosiciones.length; i++) {
-				for (int j = 0; j < vCoches.length; j++) {
-					if ((vPosiciones[i] != null && vCoches[j] != null)
-							&& vPosiciones[i].getDorsal().equals(vCoches[j].getDorsal())) {
-						vCoches[j].setPosicion(vPosiciones[i].getPosicion());
-						break;
-
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -511,8 +483,6 @@ public class Carrera {
 		String cocheAcc = "[XX)";
 		String cochecito = "";
 		String rankingString;
-
-		posicionCoches();
 
 		Main.anchoPista = Main.ANCHOTOTAL - (anchoNombresYDorsales(vCoches) + 22);
 
@@ -574,7 +544,7 @@ public class Carrera {
 					System.out.print(" ");
 				}
 
-				if ((!coche.isTerminado() && coche.isEnMarcha()) && numTurno > 2) {
+				if ((!coche.isTerminado() && coche.isEnMarcha()) && numTurno > 1) {
 					rankingString = String.valueOf(coche.getPosicion() + "º");
 					do {
 						if (rankingString.length() < (String.valueOf(numCompetidores).length() + 1)) {
@@ -888,7 +858,7 @@ public class Carrera {
 
 		for (int i = 0; i < vOrdenLlegada.length; i++) {
 			if (vOrdenLlegada[i] != null) {
-				vOrdenLlegada[i].setTurnoLlegada(i + 1);
+				vOrdenLlegada[i].setPosicionFinal(i + 1);
 			}
 		}
 	}
@@ -902,6 +872,32 @@ public class Carrera {
 	private void imprimirClasificacion() {
 		DecimalFormat df = new DecimalFormat("##.###");
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
+		String ruta = "Puntuaciones.txt";
+		PrintWriter pw = null;
+//		FileReader fr = null;
+		
+		try {
+			pw = new PrintWriter(new FileWriter(ruta, true));
+			pw.println("");
+			for (int i=0; i<nombre.length() + 1; i++) {
+				pw.print("─");
+			}
+			pw.print("┬");
+			for (int i=0; i<patrocinador.length()+2; i++) {
+				pw.print("─");
+			}
+			
+			pw.println("\n" + nombre + " │ " + patrocinador);
+			pw.println("Jugadores: " + numJugadores + " / " + vCoches.length);
+			pw.println("Longitud del circuito: " + longitud + " kilómetros");
+			for (int i=0; i<nombre.length() + patrocinador.length() + 4; i++) {
+				pw.print("─");
+			}
+			pw.println("");
+			pw.close();
+		} catch (IOException e) {
+
+		}
 
 		String titulo = "CLASIFICACIÓN FINAL";
 		int anchoNombres = anchoNombres(vOrdenLlegada);
@@ -911,8 +907,8 @@ public class Carrera {
 		int anchoSeparadores = 13;
 
 		for (Coche coche : vOrdenLlegada) {
-			if (coche != null && String.valueOf(coche.getPosicion()).length() + 1 > anchoRanking) {
-				anchoRanking = (String.valueOf(coche.getPosicion()).length() + 1);
+			if (coche != null && String.valueOf(coche.getPosicionFinal()).length() + 1 > anchoRanking) {
+				anchoRanking = (String.valueOf(coche.getPosicionFinal()).length() + 1);
 			}
 			if (coche != null && String.valueOf(coche.getDorsal()).length() > anchoDorsales) {
 				anchoDorsales = coche.getDorsal().length();
@@ -1118,6 +1114,10 @@ public class Carrera {
 
 				String rankingString = String.valueOf(coche.getPosicionFinal() + "º");
 
+				while (rankingString.length() < anchoRanking) {
+					rankingString = " " + rankingString;
+				}
+
 				if (coche.getTiempo() < 3600) {
 					tiempoString = minutos + ":" + segundos;
 					while (anchoTiempo > (tiempoString.length())) {
@@ -1149,6 +1149,42 @@ public class Carrera {
 				System.out.print(" │ " + tiempoString);
 
 				System.out.println(" │");
+
+//				try {
+//					pw = new PrintWriter(new FileWriter(ruta, true));
+//					
+//					if (coche != null) {
+//						pw.println(rankingString + " [" + coche.getDorsal() + "] " + coche.getPiloto() + " - " + tiempoString);
+//					}
+//
+//					pw.close();
+//				} catch (IOException e) {
+//
+//				}
+
+				try {
+					pw = new PrintWriter(new FileWriter(ruta, true));
+//					fr = new FileReader(ruta);
+
+//					for (Coche coche2 : vOrdenLlegada) {
+//						for (int i=0; i<ruta.length(); i++) {
+//							if () {
+//								pw.println("");
+//								pw.println(rankingString + " [" + coche.getDorsal() + "] " + coche.getPiloto() + " - " + tiempoString);
+//							}
+//						}
+//					}
+
+					if (coche != null) {
+						pw.println(rankingString + " [" + coche.getDorsal() + "] " + coche.getPiloto() + " - "
+								+ tiempoString);
+					}
+
+					pw.close();
+				} catch (IOException e) {
+
+				}
+
 			}
 		}
 
