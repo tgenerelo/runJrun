@@ -9,7 +9,7 @@ public class Main {
 	static int anchoPista = ANCHOTOTAL - 40;
 	static int POTENCIA = 50;
 	static int SEGUNDOSTURNO = 10;
-	final static String version = "1.4";
+	final static String version = "1.4.1";
 
 	public static void main(String[] args) {
 		int userInput = 0;

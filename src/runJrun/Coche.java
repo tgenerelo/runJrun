@@ -16,6 +16,7 @@ public class Coche {
 	private int velocidad;
 	private int velocidadMedia;
 	private int posicion;
+	private int posicionFinal;
 	private int turnoLlegada;
 	private float kms;
 	private float tiempo;
@@ -35,6 +36,7 @@ public class Coche {
 		this.velocidad = 0;
 		this.velocidadMedia = 0;
 		this.posicion = 0;
+		this.posicionFinal = 0;
 		this.turnoLlegada = 0;
 		this.kms = 0;
 		this.tiempo = 0;
@@ -60,6 +62,7 @@ public class Coche {
 		this.velocidad = 0;
 		this.velocidadMedia = 0;
 		this.posicion = 0;
+		this.posicionFinal = 0;
 		this.turnoLlegada = 0;
 		this.kms = 0;
 		this.tiempo = 0;
@@ -224,6 +227,7 @@ public class Coche {
 
 	public void setTerminado(boolean terminado) {
 		this.terminado = terminado;
+		this.enMarcha = false;
 	}
 
 	public String getPiloto() {
@@ -255,11 +259,11 @@ public class Coche {
 	}
 
 	public int getPosicionFinal() {
-		return turnoLlegada;
+		return posicionFinal;
 	}
 
 	public void setPosicionFinal(int posicion) {
-		this.turnoLlegada = posicion;
+		this.posicionFinal = posicion;
 	}
 
 	public void setPosicion(int posicion) {
