@@ -1,5 +1,8 @@
 package runJrun;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.InputMismatchException;
@@ -902,6 +905,8 @@ public class Carrera {
 	private void imprimirClasificacion() {
 		DecimalFormat df = new DecimalFormat("##.###");
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
+		String ruta = "Fichero.txt";
+		PrintWriter pw = null;
 
 		String titulo = "CLASIFICACIÓN FINAL";
 		int anchoNombres = anchoNombres(vOrdenLlegada);
@@ -1149,6 +1154,19 @@ public class Carrera {
 				System.out.print(" │ " + tiempoString);
 
 				System.out.println(" │");
+
+				try {
+					pw = new PrintWriter(new FileWriter(ruta, true));
+					
+					if (coche != null) {
+						pw.println(rankingString + " [" + coche.getDorsal() + "] " + coche.getPiloto() + " - " + tiempoString);
+					}
+
+					pw.close();
+				} catch (IOException e) {
+
+				}
+
 			}
 		}
 
