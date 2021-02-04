@@ -114,8 +114,14 @@ public class Main {
 										"Si el número total es mayor que el número de",
 										"coches controlados por el jugador, se rellenarán",
 										"los sitios libres automáticamente con competidores",
-										"controlados por la máquina.", "  ", "Mínimo: 1, máximo: 100." },
-								1, 100));
+										"controlados por la máquina.", 
+										" ", 
+										"Ten en cuenta que una cantidad elevada de participantes",
+										"puede incrementar el tiempo de carga de cada turno.", 
+										"  ",
+										"[ Actual: " + carrera.getNumCompetidores() + " ]",
+										"Mínimo: 1, máximo: 2000." },
+								1, 2000));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: LONGITUD DE LA CARRERA
@@ -123,8 +129,9 @@ public class Main {
 						carrera.setLongitud(
 								Menu.genMenuAjuste(vOpciones[3],
 										new String[] { "La longitud en kilómetros que tendrá la carrera.", "  ",
-												"Mínimo: 0.1 km., Máximo: 300 km. Valor por defecto: 5 km" },
-										0.1f, 300f));
+												"[ Actual: " + carrera.getLongitud() + " km. ]",
+												"Mínimo: 0.1 km., Máximo: 500 km. Valor por defecto: 5 km." },
+										0.1f, 500f));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: PATROCINADOR DE LA CARRERA
