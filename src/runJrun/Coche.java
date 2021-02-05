@@ -148,8 +148,8 @@ public class Coche {
 			// El cálculo del avance se realiza mediante la siguiente fórmula:
 			// ((Conversión a m/s) * segundos que dura cada turno / conversión a km)
 			/*
-			 * En caso de accidente, la distancia recorrida se divide entre 5
-			 * como penalización.
+			 * En caso de accidente, la distancia recorrida se divide entre 5 como
+			 * penalización.
 			 */
 
 			if (velocidad > Main.velocidadMax) {

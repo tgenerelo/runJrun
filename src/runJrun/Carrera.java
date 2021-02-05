@@ -381,7 +381,8 @@ public class Carrera {
 					Coche aux = null;
 
 					for (int j = 0; j < vAux.length; j++) {
-						if (vAux[j] != null && !vAux[j].isTerminado() && !vAux[j].isAccidentado() && (vAux[j].getKms() > numKms)) {
+						if (vAux[j] != null && !vAux[j].isTerminado() && !vAux[j].isAccidentado()
+								&& (vAux[j].getKms() > numKms)) {
 							numKms = vAux[j].getKms();
 							aux = vAux[j];
 						}
@@ -964,15 +965,11 @@ public class Carrera {
 		try {
 			pw = new PrintWriter(new FileWriter(ruta, true));
 			pw.println("");
-			for (int i = 0; i < nombre.length() + 1; i++) {
-				pw.print("─");
-			}
-			pw.print("┬");
-			for (int i = 0; i < patrocinador.length() + 2; i++) {
+			for (int i = 0; i < nombre.length() + patrocinador.length() + 21; i++) {
 				pw.print("─");
 			}
 
-			pw.println("\n" + nombre + " │ " + patrocinador);
+			pw.println("\n" + nombre.toUpperCase() + ", patrocinado por " + patrocinador);
 			pw.print("Jugadores: " + numJugadores + " / " + vCoches.length + " - ");
 			switch (dificultad) {
 			case 1:
@@ -989,8 +986,8 @@ public class Carrera {
 				break;
 			}
 			pw.println("Longitud del circuito: " + longitud + " kilómetros");
-			for (int i = 0; i < nombre.length() + patrocinador.length() + 4; i++) {
-				pw.print("─");
+			for (int i = 0; i < nombre.length() + patrocinador.length() + 19; i++) {
+				pw.print("-");
 			}
 			pw.println("");
 			pw.close();

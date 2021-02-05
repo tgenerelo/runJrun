@@ -11,7 +11,7 @@ public class Main {
 	static int SEGUNDOSTURNO = 10;
 	static int velocidadMax = 200;
 	static boolean modoEspectador = false;
-	final static String version = "1.5";
+	final static String version = "1.5.1";
 
 	public static void main(String[] args) {
 		int userInput = 0;
@@ -50,8 +50,7 @@ public class Main {
 				do {
 					String tituloOpcion = "Nueva carrera";
 					String vOpcionesCarrera[] = { "Añadir jugador", "Nombre de la carrera", "Número de participantes",
-							"Distancia de la carrera", "Velocidad máxima", "Patrocinador de la carrera",
-							"Dificultad",
+							"Distancia de la carrera", "Velocidad máxima", "Patrocinador de la carrera", "Dificultad",
 							"Comenzar carrera", "Cancelar" };
 
 					userInput = Menu.genMenu(tituloOpcion, vOpcionesCarrera);
@@ -137,11 +136,9 @@ public class Main {
 					case 5:
 						velocidadMax = Menu.genMenuAjuste(vOpcionesCarrera[4],
 								new String[] { "La velocidad máxima que puede alcanzar un",
-										"vehículo sin sufrir un accidente o avería.",
-										" ",
-										"[ Actual: " + velocidadMax + " km/h ]",
-										"Mínimo: 100 km/h, máximo: 500 km/h.",
-										"Valor por defecto: 200 km/h."},
+										"vehículo sin sufrir un accidente o avería.", " ",
+										"[ Actual: " + velocidadMax + " km/h ]", "Mínimo: 100 km/h, máximo: 500 km/h.",
+										"Valor por defecto: 200 km/h." },
 								100, 500);
 						break;
 
@@ -150,30 +147,20 @@ public class Main {
 						carrera.setPatrocinador(Menu.genMenuAjuste(vOpcionesCarrera[5],
 								new String[] { "La empresa o marca que patrocina la carrera." }, "un patrocinador"));
 						break;
-						
+
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: DIFICULTAD
 					case 7:
-						carrera.setDificultad(Menu.genMenuAjuste(vOpcionesCarrera[6],
-								new String[] { "1. MODO FÁCIL",
-										"Los rivales pueden frenar incluso cuando no hay riesgo de",
-										"accidente, y es probable que aceleren cuando sí que lo hay.",
-										" ",
-										"2. MODO CLÁSICO",
-										"Los rivales no frenan si no existe riesgo de accidente.",
-										"Cuando hay riesgo, eligen su acción aleatoriamente.",
-										"Este es el nivel de dificultad por defecto.",
-										" ",
-										"3. MODO INTELIGENTE",
-										"Los rivales escogen su acción de una forma parecida a cómo",
-										"lo hace un humano, calculando la probabilidad de accidente.",
-										" ",
-										"4. MODO IMPRUDENTE",
-										"Los rivales tienen una confianza excesiva en la seguridad de",
-										"su coche. Es muy probable que se accidenten pero, si la",
-										"suerte les acompaña, pueden sacar muchísima ventaja.",
-										" "
-										},
-								1, 4));
+						carrera.setDificultad(Menu.genMenuAjuste(vOpcionesCarrera[6], new String[] { "1. MODO FÁCIL",
+								"Los rivales pueden frenar incluso cuando no hay riesgo de",
+								"accidente, y es probable que aceleren cuando sí que lo hay.", " ", "2. MODO CLÁSICO",
+								"Los rivales no frenan si no existe riesgo de accidente.",
+								"Cuando hay riesgo, eligen su acción aleatoriamente.",
+								"Este es el nivel de dificultad por defecto.", " ", "3. MODO INTELIGENTE",
+								"Los rivales escogen su acción de una forma parecida a cómo",
+								"lo hace un humano, calculando la probabilidad de accidente.", " ",
+								"4. MODO IMPRUDENTE", "Los rivales tienen una confianza excesiva en la seguridad de",
+								"su coche. Es muy probable que se accidenten pero, si la",
+								"suerte les acompaña, pueden sacar muchísima ventaja.", " " }, 1, 4));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > COMENZAR CARRERA
@@ -226,28 +213,25 @@ public class Main {
 										"Ten en cuenta que la distancia recorrida se calcula",
 										"aleatoriamente en base a la potencia del motor, por lo",
 										"que una mayor potencia implica una mayor probabilidad de",
-										"accidente a altas velocidades.", " ",
-										("[ Actual: " + POTENCIA + " ]"),
+										"accidente a altas velocidades.", " ", ("[ Actual: " + POTENCIA + " ]"),
 										"Mínimo: 20, máximo: 80. Valor por defecto: 50" },
 								20, 80);
 						break;
-						
+
 // MENÚ PRINCIPAL > AJUSTES > CONFIGURAR MODO ESPECTADOR
 					case 4:
-						switch (Menu.genMenuAjuste(vOpcionesAjustes[3], new String[] {
-								"Cuando el Modo Espectador está activo, las carreras que no cuenten",
-								"con ningún jugador humano se mostrarán turno a turno, en lugar de ",
-								"presentar el resultado directamente al usuario.",
-								"",
-								"1. ACTIVAR MODO ESPECTADOR   ",
-								"2. DESACTIVAR MODO ESPECTADOR",
-								
-						}, 1, 2)) {
+						switch (Menu.genMenuAjuste(vOpcionesAjustes[3],
+								new String[] { "Cuando el Modo Espectador está activo, las carreras que no cuenten",
+										"con ningún jugador humano se mostrarán turno a turno, en lugar de ",
+										"presentar el resultado directamente al usuario.", "",
+										"1. ACTIVAR MODO ESPECTADOR   ", "2. DESACTIVAR MODO ESPECTADOR",
+
+								}, 1, 2)) {
 						case 1:
-							Main.modoEspectador=true;
+							Main.modoEspectador = true;
 							break;
 						case 2:
-							Main.modoEspectador=false;
+							Main.modoEspectador = false;
 							break;
 						}
 						break;
