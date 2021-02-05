@@ -134,10 +134,10 @@ public class Coche {
 
 	/**
 	 * La velocidad del coche se ve incrementada por un valor al azar entre 0 y
-	 * POTENCIA. Si supera los 200 km/h el coche se accidentará y dejará de avanzar.
-	 * En caso contrario, el coche avanzará la cantidad de metros correspondiente a
-	 * los segundos que dura cada turno (definido en SEGUNDOSTURNO) a la velocidad
-	 * actual.
+	 * POTENCIA. Si supera la velocidad máxima (200 km/h por defecto) el coche se
+	 * accidentará y dejará de avanzar. En caso contrario, el coche avanzará la
+	 * cantidad de metros correspondiente a los segundos que dura cada turno
+	 * (definido en SEGUNDOSTURNO) a la velocidad actual.
 	 */
 	public void acelerar() {
 		Random r = new Random();
@@ -148,11 +148,11 @@ public class Coche {
 			// El cálculo del avance se realiza mediante la siguiente fórmula:
 			// ((Conversión a m/s) * segundos que dura cada turno / conversión a km)
 			/*
-			 * En caso de accidente (> 200 km/h), la distancia recorrida se divide entre 5
+			 * En caso de accidente, la distancia recorrida se divide entre 5
 			 * como penalización.
 			 */
 
-			if (velocidad > 200) {
+			if (velocidad > Main.velocidadMax) {
 				kms += (((velocidad / 3.6f) * Main.SEGUNDOSTURNO / 1000) / 5);
 				accidente();
 			} else {

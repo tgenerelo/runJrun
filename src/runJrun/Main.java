@@ -9,13 +9,16 @@ public class Main {
 	static int anchoPista = ANCHOTOTAL - 40;
 	static int POTENCIA = 50;
 	static int SEGUNDOSTURNO = 10;
-	final static String version = "1.4.1";
+	static int velocidadMax = 200;
+	static boolean modoEspectador = false;
+	final static String version = "1.5";
 
 	public static void main(String[] args) {
 		int userInput = 0;
 
 //	MENÚ PRINCIPAL
 		do {
+			velocidadMax = 200;
 			carrera = new Carrera("", 5, 9);
 			userInput = 0;
 			String titulo = "Menú principal";
@@ -31,7 +34,7 @@ public class Main {
 				carrera = new Carrera("", 5, 9);
 				carrera.agregarCoche(new Coche("JUGADOR", true, "01"));
 				carrera.comenzar();
-				
+
 				break;
 
 //	MENÚ PRINCIPAL > CARRERA RÁPIDA (2 JUGADORES)
@@ -47,7 +50,9 @@ public class Main {
 				do {
 					String tituloOpcion = "Nueva carrera";
 					String vOpcionesCarrera[] = { "Añadir jugador", "Nombre de la carrera", "Número de participantes",
-							"Distancia de la carrera", "Patrocinador de la carrera", "Comenzar carrera", "Cancelar" };
+							"Distancia de la carrera", "Velocidad máxima", "Patrocinador de la carrera",
+							"Dificultad",
+							"Comenzar carrera", "Cancelar" };
 
 					userInput = Menu.genMenu(tituloOpcion, vOpcionesCarrera);
 
@@ -91,7 +96,7 @@ public class Main {
 								}
 								carrera.agregarCoche(coche);
 								coche = new Coche("", true, "");
-								userInput=4;
+								userInput = 4;
 								break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AÑADIR UN JUGADOR > CANCELAR
@@ -103,55 +108,86 @@ public class Main {
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: NOMBRE DE LA CARRERA
 					case 2:
-						carrera.setNombre(String.valueOf(Menu.genMenuAjuste(vOpciones[1],
+						carrera.setNombre(String.valueOf(Menu.genMenuAjuste(vOpcionesCarrera[1],
 								new String[] { "El nombre que recibirá la carrera.", }, "un nombre")));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: NÚMERO TOTAL DE COMPETIDORES
 					case 3:
-						carrera.setNumCompetidores(Menu.genMenuAjuste(vOpciones[2],
-								new String[] { "El número de coches que competirán en la carrera.",
-										"Si el número total es mayor que el número de",
-										"coches controlados por el jugador, se rellenarán",
-										"los sitios libres automáticamente con competidores",
-										"controlados por la máquina.", 
-										" ", 
-										"Ten en cuenta que una cantidad elevada de participantes",
-										"puede incrementar el tiempo de carga de cada turno.", 
-										"  ",
-										"[ Actual: " + carrera.getNumCompetidores() + " ]",
-										"Mínimo: 1, máximo: 2000." },
-								1, 2000));
+						carrera.setNumCompetidores(Menu.genMenuAjuste(vOpcionesCarrera[2], new String[] {
+								"El número de coches que competirán en la carrera.",
+								"Si el número total es mayor que el número de",
+								"coches controlados por el jugador, se rellenarán",
+								"los sitios libres automáticamente con competidores", "controlados por la máquina.",
+								" ", "Ten en cuenta que una cantidad elevada de participantes",
+								"puede incrementar el tiempo de carga de cada turno.", "  ",
+								"[ Actual: " + carrera.getNumCompetidores() + " ]", "Mínimo: 1, máximo: 2000." }, 1,
+								2000));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: LONGITUD DE LA CARRERA
 					case 4:
-						carrera.setLongitud(
-								Menu.genMenuAjuste(vOpciones[3],
-										new String[] { "La longitud en kilómetros que tendrá la carrera.", "  ",
-												"[ Actual: " + carrera.getLongitud() + " km. ]",
-												"Mínimo: 0.1 km., Máximo: 500 km. Valor por defecto: 5 km." },
-										0.1f, 500f));
+						carrera.setLongitud(Menu.genMenuAjuste(vOpcionesCarrera[3],
+								new String[] { "La longitud en kilómetros que tendrá la carrera.", "  ",
+										"[ Actual: " + carrera.getLongitud() + " km. ]",
+										"Mínimo: 0.1 km., máximo: 500 km. Valor por defecto: 5 km." },
+								0.1f, 500f));
+						break;
+// MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: VELOCIDAD MÁXIMA
+					case 5:
+						velocidadMax = Menu.genMenuAjuste(vOpcionesCarrera[4],
+								new String[] { "La velocidad máxima que puede alcanzar un",
+										"vehículo sin sufrir un accidente o avería.",
+										" ",
+										"[ Actual: " + velocidadMax + " km/h ]",
+										"Mínimo: 100 km/h, máximo: 500 km/h.",
+										"Valor por defecto: 200 km/h."},
+								100, 500);
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: PATROCINADOR DE LA CARRERA
-					case 5:
-						carrera.setPatrocinador(Menu.genMenuAjuste(vOpciones[4],
+					case 6:
+						carrera.setPatrocinador(Menu.genMenuAjuste(vOpcionesCarrera[5],
 								new String[] { "La empresa o marca que patrocina la carrera." }, "un patrocinador"));
+						break;
+						
+//	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AJUSTE: DIFICULTAD
+					case 7:
+						carrera.setDificultad(Menu.genMenuAjuste(vOpcionesCarrera[6],
+								new String[] { "1. MODO FÁCIL",
+										"Los rivales pueden frenar incluso cuando no hay riesgo de",
+										"accidente, y es probable que aceleren cuando sí que lo hay.",
+										" ",
+										"2. MODO CLÁSICO",
+										"Los rivales no frenan si no existe riesgo de accidente.",
+										"Cuando hay riesgo, eligen su acción aleatoriamente.",
+										"Este es el nivel de dificultad por defecto.",
+										" ",
+										"3. MODO INTELIGENTE",
+										"Los rivales escogen su acción de una forma parecida a cómo",
+										"lo hace un humano, calculando la probabilidad de accidente.",
+										" ",
+										"4. MODO IMPRUDENTE",
+										"Los rivales tienen una confianza excesiva en la seguridad de",
+										"su coche. Es muy probable que se accidenten pero, si la",
+										"suerte les acompaña, pueden sacar muchísima ventaja.",
+										" "
+										},
+								1, 4));
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > COMENZAR CARRERA
-					case 6:
+					case 8:
 						carrera.comenzar();
 						carrera = new Carrera("", 5, 9);
-						userInput = 7;
+						userInput = 9;
 						break;
 
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > CANCELAR
-					case 7:
+					case 9:
 						break;
 					}
-				} while (userInput != 7);
+				} while (userInput != 9);
 				break;
 
 //	MENÚ PRINCIPAL > AJUSTES
@@ -159,7 +195,7 @@ public class Main {
 				do {
 					titulo = "Ajustes del juego";
 					String vOpcionesAjustes[] = { "Configurar ancho del programa", "Cambiar la escala de tiempo",
-							"Cambiar la potencia del coche", "Volver al menú" };
+							"Cambiar la potencia del coche", "Configurar modo espectador", "Volver al menú" };
 					userInput = 0;
 					userInput = Menu.genMenu(titulo, vOpcionesAjustes);
 
@@ -188,19 +224,39 @@ public class Main {
 						Main.POTENCIA = Menu.genMenuAjuste(vOpcionesAjustes[2],
 								new String[] { "La potencia que tendrán todos los coches del juego.",
 										"Ten en cuenta que la distancia recorrida se calcula",
-										"aleatoriamente en base a la potencia del motor, por",
-										"lo que una mayor potencia implica una mayor",
-										"probabilidad de accidente a altas velocidades.", " ",
+										"aleatoriamente en base a la potencia del motor, por lo",
+										"que una mayor potencia implica una mayor probabilidad de",
+										"accidente a altas velocidades.", " ",
 										("[ Actual: " + POTENCIA + " ]"),
 										"Mínimo: 20, máximo: 80. Valor por defecto: 50" },
 								20, 80);
 						break;
+						
+// MENÚ PRINCIPAL > AJUSTES > CONFIGURAR MODO ESPECTADOR
+					case 4:
+						switch (Menu.genMenuAjuste(vOpcionesAjustes[3], new String[] {
+								"Cuando el Modo Espectador está activo, las carreras que no cuenten",
+								"con ningún jugador humano se mostrarán turno a turno, en lugar de ",
+								"presentar el resultado directamente al usuario.",
+								"",
+								"1. ACTIVAR MODO ESPECTADOR   ",
+								"2. DESACTIVAR MODO ESPECTADOR",
+								
+						}, 1, 2)) {
+						case 1:
+							Main.modoEspectador=true;
+							break;
+						case 2:
+							Main.modoEspectador=false;
+							break;
+						}
+						break;
 
 //	MENÚ PRINCIPAL > AJUSTES > VOLVER AL MENÚ
-					case 4:
+					case 5:
 						break;
 					}
-				} while (userInput != 4);
+				} while (userInput != 5);
 				break;
 
 //	MENÚ PRINCIPAL > ACERCA DE RUNJRUN

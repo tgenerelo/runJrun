@@ -28,6 +28,8 @@ public class Carrera {
 	private Coche vOrdenLlegada[];
 	private int numTurno;
 	private int numJugadores;
+	private int dificultad;
+	private boolean soloNpcs;
 
 	/**
 	 * Genera un nuevo objeto de tipo Carrera.
@@ -50,6 +52,10 @@ public class Carrera {
 		this.vOrdenLlegada = new Coche[numCompetidores];
 		this.numTurno = -1;
 		this.numJugadores = 0;
+		this.dificultad = 2;
+		this.soloNpcs = false;
+
+		Main.velocidadMax = 200;
 	}
 
 	/**
@@ -196,9 +202,49 @@ public class Carrera {
 	 */
 	public void comenzar() {
 		prepararCarrera();
-		do {
-			turnoCarrera();
-		} while (!isTerminada());
+
+		if (Main.modoEspectador == true) {
+			if (soloNpcs) {
+				do {
+					pintarGraficos();
+					System.out.println("\n\n\n\n");
+					turnoCarrera();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				} while (!isTerminada());
+			} else {
+				do {
+					int jugTermin = 0;
+
+					for (Coche coche : vCoches) {
+						if (coche.isJugador() && coche.isTerminado())
+							jugTermin++;
+					}
+
+					if (numJugadores - jugTermin != 0) {
+						turnoCarrera();
+					} else {
+						pintarGraficos();
+						System.out.println("\n\n\n\n");
+						turnoCarrera();
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+						}
+					}
+
+				} while (!isTerminada());
+
+			}
+
+		} else {
+			do {
+				turnoCarrera();
+			} while (!isTerminada());
+
+		}
 
 		imprimirClasificacion();
 	}
@@ -215,6 +261,9 @@ public class Carrera {
 		boolean asignado = false;
 
 		Coche vParticipantes[];
+
+		if (numJugadores == 0)
+			soloNpcs = true;
 
 		if (numCompetidores < numJugadores)
 			numCompetidores = numJugadores;
@@ -266,7 +315,7 @@ public class Carrera {
 	public void turnoCarrera() {
 
 		numTurno++;
-		
+
 		for (int i = 1; i <= numJugadores; i++) {
 			for (int j = 0; j < vCoches.length; j++) {
 				if (vCoches[j] != null && vCoches[j].getNumJugador() == i) {
@@ -318,7 +367,7 @@ public class Carrera {
 		}
 
 		Coche vAux[] = vCoches.clone();
-		
+
 		for (int i = 0; i < vCoches.length; i++) {
 			if (vCoches[i] != null) {
 
@@ -326,29 +375,28 @@ public class Carrera {
 
 				if (cocheActual.isTerminado()) {
 					cocheActual.setPosicion(cocheActual.getPosicionFinal());
-					vAux[cocheActual.getPosicion()-1] = cocheActual;
+					vAux[cocheActual.getPosicion() - 1] = cocheActual;
 				} else {
 					float numKms = 0;
 					Coche aux = null;
 
 					for (int j = 0; j < vAux.length; j++) {
-						if (vAux[j]!= null && !vAux[j].isTerminado() && (vAux[j].getKms() > numKms)) {
+						if (vAux[j] != null && !vAux[j].isTerminado() && !vAux[j].isAccidentado() && (vAux[j].getKms() > numKms)) {
 							numKms = vAux[j].getKms();
 							aux = vAux[j];
 						}
 					}
-					
-					for (int j=0; j<vCoches.length; j++) {
-						if (vCoches[j]!=null && vCoches[j].equals(aux)) {
-							vCoches[j].setPosicion(cochesOrdenados+1);
+
+					for (int j = 0; j < vCoches.length; j++) {
+						if (vCoches[j] != null && vCoches[j].equals(aux)) {
+							vCoches[j].setPosicion(cochesOrdenados + 1);
 							cochesOrdenados++;
-							for (int m=0; m<vAux.length; m++) {
+							for (int m = 0; m < vAux.length; m++) {
 								if (vAux[m] != null && vAux[m].equals(aux))
-									vAux[m]=null;
+									vAux[m] = null;
 							}
 						}
 					}
-					
 
 				}
 			}
@@ -450,17 +498,54 @@ public class Carrera {
 	 */
 	private void turnoNpcs(Coche coche) {
 		Random r = new Random();
+		float probAceler = (Main.velocidadMax - coche.getVelocidad()) / Main.POTENCIA;
 
 		if (!coche.isTerminado()) {
 			if (coche.isEnMarcha()) {
-				if (coche.getVelocidad() <= 150) {
-					coche.acelerar();
-				} else {
-					if (r.nextInt() % 2 == 0) {
-						coche.acelerar();
+				if (coche.getVelocidad() <= Main.velocidadMax - Main.POTENCIA) {
+					if (dificultad == 1) {
+						if (r.nextFloat() < 0.8) {
+							coche.acelerar();
+						} else {
+							coche.frenar();
+						}
 					} else {
-						coche.frenar();
+						coche.acelerar();
 					}
+
+				} else {
+					switch (dificultad) {
+					case 1:
+						if (r.nextFloat() < 0.7f) {
+							coche.acelerar();
+						} else {
+							coche.frenar();
+						}
+					case 2:
+						if (r.nextInt() % 2 == 0) {
+							coche.acelerar();
+						} else {
+							coche.frenar();
+						}
+						break;
+					case 3:
+						probAceler = ((Main.velocidadMax - coche.getVelocidad()) / (Main.POTENCIA * 0.9f));
+						if (r.nextFloat() <= probAceler) {
+							coche.acelerar();
+						} else {
+							coche.frenar();
+						}
+						break;
+					case 4:
+						probAceler = ((Main.velocidadMax - coche.getVelocidad()) / (Main.POTENCIA * 0.4f));
+						if (r.nextFloat() <= probAceler) {
+							coche.acelerar();
+						} else {
+							coche.frenar();
+						}
+						break;
+					}
+
 				}
 
 			} else {
@@ -875,22 +960,36 @@ public class Carrera {
 		String ruta = "Puntuaciones.txt";
 		PrintWriter pw = null;
 //		FileReader fr = null;
-		
+
 		try {
 			pw = new PrintWriter(new FileWriter(ruta, true));
 			pw.println("");
-			for (int i=0; i<nombre.length() + 1; i++) {
+			for (int i = 0; i < nombre.length() + 1; i++) {
 				pw.print("─");
 			}
 			pw.print("┬");
-			for (int i=0; i<patrocinador.length()+2; i++) {
+			for (int i = 0; i < patrocinador.length() + 2; i++) {
 				pw.print("─");
 			}
-			
+
 			pw.println("\n" + nombre + " │ " + patrocinador);
-			pw.println("Jugadores: " + numJugadores + " / " + vCoches.length);
+			pw.print("Jugadores: " + numJugadores + " / " + vCoches.length + " - ");
+			switch (dificultad) {
+			case 1:
+				pw.println("Dificultad: Fácil");
+				break;
+			case 2:
+				pw.println("Dificultad: Clásica");
+				break;
+			case 3:
+				pw.println("Dificultad: Humano");
+				break;
+			case 4:
+				pw.println("Dificultad: Imprudente");
+				break;
+			}
 			pw.println("Longitud del circuito: " + longitud + " kilómetros");
-			for (int i=0; i<nombre.length() + patrocinador.length() + 4; i++) {
+			for (int i = 0; i < nombre.length() + patrocinador.length() + 4; i++) {
 				pw.print("─");
 			}
 			pw.println("");
@@ -1294,6 +1393,14 @@ public class Carrera {
 
 	public Coche[] getvCoches() {
 		return vCoches;
+	}
+
+	public int getDificultad() {
+		return dificultad;
+	}
+
+	public void setDificultad(int dificultad) {
+		this.dificultad = dificultad;
 	}
 
 	public void setNumJugadores(int numJugadores) {
