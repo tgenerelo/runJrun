@@ -60,7 +60,7 @@ public class Main {
 //	MENÚ PRINCIPAL > CONFIGURAR CARRERA > AÑADIR UN JUGADOR
 					case 1:
 						do {
-							titulo = "Añadir un jugador";
+							titulo = vOpcionesCarrera[0];
 							String vOpcionesJugador[] = { "Nombre del jugador", "Número de dorsal", "Guardar",
 									"Cancelar" };
 							userInput = 0;
