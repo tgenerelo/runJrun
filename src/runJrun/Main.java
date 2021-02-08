@@ -10,7 +10,7 @@ public class Main {
 	static int POTENCIA = 50;
 	static int SEGUNDOSTURNO = 10;
 	static int velocidadMax = 200;
-	static boolean modoEspectador = false;
+	static boolean modoEspectador = true;
 	final static String version = "1.5.1";
 
 	public static void main(String[] args) {
@@ -182,7 +182,7 @@ public class Main {
 				do {
 					titulo = "Ajustes del juego";
 					String vOpcionesAjustes[] = { "Configurar ancho del programa", "Cambiar la escala de tiempo",
-							"Cambiar la potencia del coche", "Configurar modo espectador", "Volver al menú" };
+							"Cambiar la potencia del coche", "Modo espectador", "Volver al menú" };
 					userInput = 0;
 					userInput = Menu.genMenu(titulo, vOpcionesAjustes);
 
@@ -220,7 +220,13 @@ public class Main {
 
 // MENÚ PRINCIPAL > AJUSTES > CONFIGURAR MODO ESPECTADOR
 					case 4:
-						switch (Menu.genMenuAjuste(vOpcionesAjustes[3],
+						String estadoME = "";
+						if (modoEspectador==true) {
+							estadoME = " (Activado)";
+						} else {
+							estadoME = " (Desactivado)";
+						}
+						switch (Menu.genMenuAjuste((vOpcionesAjustes[3] + estadoME),
 								new String[] { "Cuando el Modo Espectador está activo, las carreras que no cuenten",
 										"con ningún jugador humano se mostrarán turno a turno, en lugar de ",
 										"presentar el resultado directamente al usuario.", "",
