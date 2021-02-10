@@ -217,13 +217,16 @@ public class Carrera {
 			} else {
 				do {
 					int jugTermin = 0;
+					int jugActiv = 0;
 
 					for (Coche coche : vCoches) {
 						if (coche.isJugador() && coche.isTerminado())
 							jugTermin++;
 					}
-
-					if (numJugadores - jugTermin != 0) {
+					
+					jugActiv= numJugadores - jugTermin;
+					
+					if (jugActiv != 0) {
 						turnoCarrera();
 					} else {
 						pintarGraficos();
@@ -489,6 +492,7 @@ public class Carrera {
 
 				}
 			}
+		
 		}
 	}
 
