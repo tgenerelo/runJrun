@@ -11,7 +11,7 @@ public class Main {
 	static int SEGUNDOSTURNO = 10;
 	static int velocidadMax = 200;
 	static boolean modoEspectador = true;
-	final static String version = "1.5.1";
+	final static String version = "1.5.2";
 
 	public static void main(String[] args) {
 		int userInput = 0;
