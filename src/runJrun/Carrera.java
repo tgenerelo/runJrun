@@ -928,7 +928,7 @@ public class Carrera {
 	 */
 	private void calcularTiempo(Coche coche) {
 		
-		float distMaxTurno = (Main.velocidadMax/3.6f)*10;
+//		float distMaxTurno = (Main.velocidadMax/3.6f)*10;
 
 		coche.setTiempo((numTurno * Main.SEGUNDOSTURNO) - ((coche.getKms() - longitud) * 1000) / (Main.velocidadMax/3.6f));
 	}
