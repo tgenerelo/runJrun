@@ -927,9 +927,10 @@ public class Carrera {
 	 * @param coche El coche del que se quiere calcular el tiempo.
 	 */
 	private void calcularTiempo(Coche coche) {
+		
+		float distMaxTurno = (Main.velocidadMax/3.6f)*10;
 
-		coche.setTiempo((numTurno * 10) - (coche.getKms() - longitud) * 10); // El tiempo que ha logrado el coche en
-																				// segundos.
+		coche.setTiempo((numTurno * Main.SEGUNDOSTURNO) - ((coche.getKms() - longitud) * 1000) / (Main.velocidadMax/3.6f));
 	}
 
 	/**
