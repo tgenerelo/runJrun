@@ -220,13 +220,13 @@ public class Carrera {
 					int jugActiv = 0;
 
 					for (Coche coche : vCoches) {
-						if (coche.isJugador() && coche.isTerminado())
+						if (coche.isJugador() && (coche.isTerminado() || (coche.isAccidentado() && vOrdenLlegada[0]!=null)))
 							jugTermin++;
 					}
 					
 					jugActiv= numJugadores - jugTermin;
 					
-					if (jugActiv != 0) {
+					if (jugActiv >0) {
 						turnoCarrera();
 					} else {
 						pintarGraficos();
@@ -480,7 +480,17 @@ public class Carrera {
 				break;
 			}
 
-			if (numJugadores > 1 && numTurno > 1) {
+			int jugTermin = 0;
+			int jugActiv = 0;
+
+			for (Coche coche : vCoches) {
+				if (coche.isJugador() && (coche.isTerminado() || (coche.isAccidentado() && vOrdenLlegada[0]!=null)))
+					jugTermin++;
+			}
+			
+			jugActiv= numJugadores - jugTermin;
+			
+			if (jugActiv > 1 && numTurno > 1) {
 				ordenarPosiciones();
 				pintarGraficos();
 				pintarSalpicadero(jugador);
