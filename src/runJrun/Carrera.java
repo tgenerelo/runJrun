@@ -490,7 +490,7 @@ public class Carrera {
 			
 			jugActiv= numJugadores - jugTermin;
 			
-			if (jugActiv > 1 && numTurno > 1) {
+			if (jugActiv > 1 && numTurno > 0) {
 				ordenarPosiciones();
 				pintarGraficos();
 				pintarSalpicadero(jugador);
